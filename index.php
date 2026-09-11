@@ -36,7 +36,7 @@ $topContributors = $pdo->query("SELECT u.username, u.full_name, COUNT(p.id) AS p
     FROM users u JOIN posts p ON p.user_id = u.id AND p.status='approved'
     GROUP BY u.id ORDER BY posts DESC LIMIT 5")->fetchAll();
 
-$pageTitle = 'Diễn đàn UTH';
+$pageTitle = 'Diễn đàn UTHer';
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="row">
