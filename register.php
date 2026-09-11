@@ -59,7 +59,7 @@ require __DIR__ . '/includes/header.php';
         <input type="text" name="full_name" value="<?= e($_POST['full_name'] ?? '') ?>">
       </div>
       <div class="form-group">
-        <label>Tên đăng nhập</label>
+        <label>Đăng nhập</label>
         <input type="text" name="username" value="<?= e($_POST['username'] ?? '') ?>" required>
       </div>
       <div class="form-group">
