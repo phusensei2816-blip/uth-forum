@@ -9,7 +9,7 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Base URL of the site, used for building links (no trailing slash)
-define('BASE_URL', '');
+define('BASE_URL', 'http://localhost/uth-forum-main');
 
 // Where uploaded materials are stored on disk / served from
 define('UPLOAD_DIR', __DIR__ . '/../uploads/materials/');
