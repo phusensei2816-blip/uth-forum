@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
 
+
 if (is_logged_in()) { header('Location: index.php'); exit; }
+
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,9 +12,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $role = $_POST['role'] ?? 'student';
 
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE (username = ? OR email = ?) AND role = ? AND is_active = 1');
-    $stmt->execute([$login, $login, $role]);
+
+    if ($role === 'admin') {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? AND role = ? AND is_active = 1');
+        $stmt->execute([$login, $login, $role]);
+    } else {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE (user_code = ? OR email = ?) AND role = ? AND is_active = 1');
+        $stmt->execute([$login, $login, $role]);
+    }
+
     $user = $stmt->fetch();
+
 
     if ($user && password_verify($password, $user['password_hash'])) {
         session_regenerate_id(true);
@@ -21,8 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: index.php');
         exit;
     }
-    $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
+    $error = 'Mã số/Email hoặc mật khẩu không đúng.';
 }
+
 
 $pageTitle = 'Đăng nhập - UTH Forum';
 
@@ -100,7 +111,7 @@ $pageTitle = 'Đăng nhập - UTH Forum';
 
                         <div class="input-wrap">
                             <i class="fa-regular fa-id-badge"></i>
-                            <input type="text" id="login" name="login" placeholder="Nhập MSSV" autocomplete="username" required autofocus>
+                            <input type="text" id="login" name="login" placeholder="Nhập MSSV/Email" autocomplete="username" required autofocus>
                         </div>
                         <!-- <p id="login-hint" class="login-hint">Sử dụng MSSV được cấp bởi nhà trường</p> -->
 
@@ -124,7 +135,7 @@ $pageTitle = 'Đăng nhập - UTH Forum';
                             <span>Ghi nhớ đăng nhập</span>
                         </label>
 
-                        <a href="#" class="forgot-link">Quên mật khẩu?</a>
+                        <a href="forgot_password.php" class="forgot-link">Quên mật khẩu?</a>
                     </div>
 
                     <button type="submit" class="login-submit">Đăng nhập</button>
@@ -227,17 +238,17 @@ $pageTitle = 'Đăng nhập - UTH Forum';
             roleInput.value = role;
 
             if (role === 'student') {
-                loginInput.placeholder = 'Nhập MSSV';
+                loginInput.placeholder = 'Nhập MSSV/Email';
                 // loginHint.textContent = 'Sử dụng MSSV được cấp bởi nhà trường';
             }
 
             if (role === 'teacher') {
-                loginInput.placeholder = 'Nhập MSGV';
+                loginInput.placeholder = 'Nhập MSGV/Email';
                 // loginHint.textContent = 'Sử dụng MSGV được cấp bởi nhà trường';
             }
 
             if (role === 'admin') {
-                loginInput.placeholder = 'Tên đăng nhập Admin';
+                loginInput.placeholder = 'Email';
                 // loginHint.textContent = 'Sử dụng tài khoản Admin được cấp bởi hệ thống';
             }
         });

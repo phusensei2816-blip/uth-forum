@@ -497,6 +497,34 @@
   line-height: 1.2;
 }
 
+/* ---------- FORGOT ---------- */
+
+.login-success {
+    margin-bottom: 25px;
+}
+
+.reset-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.reset-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- REGISTER ---------- */
+
+.register-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.register-row .input-wrap {
+    min-width: 0;
+}
+
 /* ---------- RESPONSIVE ---------- */
 
 @media (max-width: 1023px) {
@@ -538,6 +566,10 @@
   .login-panel {
     padding: 38px 38px 35px;
   }
+
+  .register-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 520px) {
