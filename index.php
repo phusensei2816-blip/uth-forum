@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/functions.php';
 log_visit();
 
+
 $q = trim($_GET['q'] ?? '');
 $where = "p.status = 'approved'";
 $params = [];
@@ -11,10 +12,12 @@ if ($q !== '') {
     $params[] = "%$q%";
 }
 
+
 $total = $pdo->prepare("SELECT COUNT(*) FROM posts p WHERE $where");
 $total->execute($params);
 $totalRows = (int)$total->fetchColumn();
 [$offset, $perPage, $page, $totalPages] = paginate($totalRows, 8);
+
 
 $sql = "SELECT p.*, u.username, u.full_name, u.role,
                (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count,
@@ -27,20 +30,42 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $posts = $stmt->fetchAll();
 
+
 // Sidebar data
 $topClasses = $pdo->query("SELECT c.id, c.name, COUNT(cm.id) AS members
     FROM classes c LEFT JOIN class_members cm ON cm.class_id = c.id
     GROUP BY c.id ORDER BY members DESC LIMIT 5")->fetchAll();
 
+
 $topContributors = $pdo->query("SELECT u.username, u.full_name, COUNT(p.id) AS posts
     FROM users u JOIN posts p ON p.user_id = u.id AND p.status='approved'
     GROUP BY u.id ORDER BY posts DESC LIMIT 5")->fetchAll();
 
-$pageTitle = 'Diễn đàn UTHer';
-require __DIR__ . '/includes/header.php';
-?>
+
+$pageTitle = 'Diễn đàn UTH';
+$pageCss = 'Index.css';
+require __DIR__ . '/includes/header.php';?>
+
+<?php if (!current_user()): ?>
+
+<section class="home-hero">
+  <img class="campus-index-image" src="img/uth-campus-index.png" alt="Cơ sở UTH">
+
+  <div class="home-hero-content">
+    <p class="home-hero-label">WELCOME TO</p>
+    <h1>FORUM UTH</h1>
+    <h2>Kết nối sinh viên và giảng viên UTH</h2>
+    <p>
+      Cùng chia sẻ kiến thức, tài liệu, thông tin học tập
+      <br>và xây dựng cộng đồng UTH năng động
+    </p>
+  </div>
+
+</section>
+<?php endif; ?>
+
 <div class="row">
-  <section class="left" style="flex:3;min-width:0;">
+  <section class="left">
     <h2><?= $q !== '' ? 'Kết quả tìm kiếm: "' . e($q) . '"' : 'Bảng tin cộng đồng' ?></h2>
     <div class="box">
       <?php if (!$posts): ?>
@@ -69,7 +94,7 @@ require __DIR__ . '/includes/header.php';
     </div>
   </section>
 
-  <aside class="sidebar" style="flex:1;min-width:260px;">
+  <aside class="sidebar">
     <div class="box">
       <h3>Lớp học nổi bật</h3>
       <?php foreach ($topClasses as $c): ?>
@@ -83,6 +108,7 @@ require __DIR__ . '/includes/header.php';
       <?php endforeach; ?>
       <?php if (!$topClasses): ?><p style="color:var(--muted);font-size:13px;">Chưa có lớp học nào.</p><?php endif; ?>
     </div>
+
     <div class="box">
       <h3>Đóng góp nhiều nhất</h3>
       <?php foreach ($topContributors as $c): ?>
@@ -98,4 +124,5 @@ require __DIR__ . '/includes/header.php';
     </div>
   </aside>
 </div>
+
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -1,0 +1,419 @@
+/* ---------- Guest Home Hero ---------- */
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    margin: 0 10px 20px;
+    border-radius: 10px;
+    background: #0e8074;
+    color: #fff;
+    transform:translateY(-20px)
+}
+
+.campus-index-image {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transform: scale(1.2);
+    margin: 0 0 0 220px;
+}
+
+.home-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 70, 62, 1) 0%,
+        rgba(0, 70, 62, 0.99) 34%,
+        rgba(0, 70, 62, 0) 55%,
+        rgba(0, 70, 62, 0) 100%
+    );
+}
+
+.home-hero-content {
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+}
+
+.home-hero-label {
+    display: inline-block;
+    margin: 0 0 20px;
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 20px;
+    background: rgba(0, 150, 130, 0.35);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.home-hero-content h1 {
+    margin: 0 0 8px;
+    color: #fff;
+    font-size: 45px;
+    line-height: 1.1;
+}
+
+.home-hero-content h2 {
+    margin: 0 0 12px;
+    color: #fff;
+    font-size: 25px;
+}
+
+.home-hero-content > p:not(.home-hero-label) {
+    color: #fff;;
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 600px;
+}
+
+/* ---------- Homepage Content ---------- */
+.left {
+    min-width: 0;
+}
+
+.post-title a {
+    transition: 0.2s ease;
+}
+
+.post-title a:hover {
+    color: var(--teal);
+}
+
+.post-actions a {
+    transition: 0.2s ease;
+}
+
+.post-actions a:hover {
+    color: var(--teal);
+}
+
+/* =================================
+   SIDEBAR - LỚP HỌC & ĐÓNG GÓP
+================================= */
+.row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.left {
+    flex:3;
+    min-width: 0;
+}
+
+.sidebar {
+   display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-width: 450px;
+}
+
+.box {
+    background: #ffffff;
+    border: 1px solid #dce6eb;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0 10px;
+    box-shadow: 0 2px 6px rgba(25, 65, 85, 0.05);
+}
+
+
+.box h3 {
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #5c6a66;
+    color: #183b55;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Một dòng lớp học hoặc người đóng góp */
+.inner-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 2px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.inner-box:hover {
+    background-color: #f3f8fa;
+}
+
+/* Avatar hình tròn */
+.avatar-sm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #1476ad;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Nội dung bên cạnh avatar */
+.sidebar .details {
+    flex: 1;
+    min-width: 0;
+    color: #29465b;
+    line-height: 1.4;
+}
+
+/* Tên lớp học / tên người dùng */
+.sidebar .details > div {
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Số thành viên / số bài viết */
+.sidebar .details > span {
+    display: block;
+    margin-top: 2px;
+    color: #8496a3;
+    font-size: 11px;
+}
+
+/* Dòng cuối cùng không cần khoảng cách thừa */
+.sidebar .inner-box:last-child {
+    margin-bottom: 0;
+}
+
+/* =================================
+   BẢNG TIN CỘNG ĐỒNG
+================================= */
+
+.left > h2 {
+    margin: 0 15px 15px;
+    color: #183b55;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* Khung chứa danh sách bài viết */
+.left > .box {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 20px;
+    background: #ffffff;
+    border: 1px solid #dce6eb;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(25, 65, 85, 0.04);
+}
+
+/* Từng bài viết */
+.post-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 0;
+    border-bottom: 1px solid #edf1f3;
+}
+
+.post-card:last-of-type {
+    border-bottom: none;
+}
+
+/* Avatar người đăng */
+.post-card > .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2f0f8;
+    color: #176b9a;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+/* Khối nội dung bài viết */
+.post-card > div[style*="flex:1"] {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Tên người đăng, vai trò và thời gian */
+.post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+    margin: 1px 0 8px;
+    color: #8496a3;
+    font-size: 12px;
+}
+
+.post-meta strong {
+    color: #29465b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Nhãn thông báo khẩn cấp */
+.post-meta .tag-urgent {
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #fff0ed;
+    color: #d34b3e;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Tiêu đề bài viết */
+.post-title {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.post-title a {
+    color: #183b55;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.post-title a:hover {
+    color: #087fba;
+}
+
+/* Thanh tương tác */
+.post-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    color: #8496a3;
+    font-size: 12px;
+}
+
+.post-actions span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.post-actions .fa-heart {
+    color: #e36b7b;
+}
+
+.post-actions .fa-comment {
+    color: #4195bd;
+}
+
+.post-actions a {
+    margin-left: auto;
+    color: #087fba;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.post-actions a:hover {
+    color: #075b87;
+    text-decoration: underline;
+}
+
+/* Phân trang */
+.left .pagination,
+.left .pagination a {
+    font-size: 13px;
+}
+
+/* =================================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 768px) {
+
+    .home-hero {
+        padding: 35px 25px;
+    }
+
+    .home-hero h1 {
+        font-size: 30px;
+    }
+
+    .home-hero h2 {
+        font-size: 19px;
+    }
+
+    .home-hero-actions {
+        flex-direction: column;
+    }
+
+    .home-hero-actions .btn {
+        text-align: center;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+
+    .left, .sidebar {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .sidebar {
+        gap: 14px;
+    }
+
+    .sidebar .details > div {
+        white-space: normal;
+    }
+
+    .left > h2 {
+        font-size: 19px;
+    }
+
+    .left > .box {
+        padding: 0 13px;
+    }
+
+    .post-card {
+        gap: 10px;
+        padding: 15px 0;
+    }
+
+    .post-card > .avatar {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+    }
+
+    .post-title {
+        font-size: 15px;
+    }
+
+    .post-actions {
+        gap: 8px 12px;
+    }
+}
