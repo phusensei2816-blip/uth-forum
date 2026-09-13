@@ -14,5 +14,8 @@
     <p>&copy; <?= date('Y') ?> UTH Forum. Được xây dựng cho mục đích học tập.</p>
   </div>
 </footer>
+
+<script src="<?= e(BASE_URL) ?>/js/main.js"></script>
+
 </body>
 </html>

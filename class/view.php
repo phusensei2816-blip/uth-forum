@@ -1,108 +1,93 @@
 <?php
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_login();
+
 $user = current_user();
+$classId = (int)($_GET['id'] ?? 0);
 
-$id = (int)($_GET['id'] ?? 0);
-$stmt = $pdo->prepare('SELECT c.*, u.full_name AS teacher_name FROM classes c JOIN users u ON u.id = c.teacher_id WHERE c.id = ?');
-$stmt->execute([$id]);
+$stmt = $pdo->prepare(
+    'SELECT c.*, u.full_name AS teacher_name
+     FROM classes c JOIN users u ON u.id = c.teacher_id
+     WHERE c.id = ?'
+);
+$stmt->execute([$classId]);
 $class = $stmt->fetch();
-if (!$class) { http_response_code(404); die('Không tìm thấy lớp học.'); }
 
-$isTeacher = $user['id'] == $class['teacher_id'];
-$isAdmin = $user['role'] === 'admin';
-
-$memberChk = $pdo->prepare('SELECT id FROM class_members WHERE class_id=? AND user_id=?');
-$memberChk->execute([$id, $user['id']]);
-$isMember = (bool)$memberChk->fetch();
-
-if (!$isTeacher && !$isMember && !$isAdmin) {
-    http_response_code(403);
-    die('Bạn cần tham gia lớp bằng mã mời để xem nội dung này.');
+if (!$class) {
+    http_response_code(404);
+    die('Không tìm thấy lớp học.');
 }
 
-$posts = $pdo->prepare("SELECT p.*, u.full_name, u.username FROM posts p JOIN users u ON u.id=p.user_id
-                         WHERE p.class_id = ? AND p.status='approved' ORDER BY p.is_announcement DESC, p.created_at DESC");
-$posts->execute([$id]);
+$isOwner = ($user['role'] === 'teacher' && (int)$class['teacher_id'] === (int)$user['id']);
+$isAdmin = ($user['role'] === 'admin');
+$isMember = false;
+
+if ($user['role'] === 'student') {
+    $check = $pdo->prepare('SELECT id FROM class_members WHERE class_id = ? AND user_id = ?');
+    $check->execute([$classId, $user['id']]);
+    $isMember = (bool)$check->fetch();
+}
+
+if (!$isOwner && !$isAdmin && !$isMember) {
+    http_response_code(403);
+    die('Bạn chưa tham gia lớp học này.');
+}
+
+$posts = $pdo->prepare(
+    "SELECT p.*, u.full_name, u.username FROM posts p
+     JOIN users u ON u.id = p.user_id
+     WHERE p.class_id = ? AND p.status = 'approved'
+     ORDER BY p.is_announcement DESC, p.created_at DESC"
+);
+$posts->execute([$classId]);
 $posts = $posts->fetchAll();
 
-$materials = $pdo->prepare('SELECT f.*, u.full_name, u.username FROM files f JOIN users u ON u.id=f.uploader_id
-                             WHERE f.class_id = ? ORDER BY f.created_at DESC');
-$materials->execute([$id]);
-$materials = $materials->fetchAll();
-
-$members = $pdo->prepare('SELECT u.* FROM class_members cm JOIN users u ON u.id=cm.user_id WHERE cm.class_id=?');
-$members->execute([$id]);
-$members = $members->fetchAll();
-
-$pageTitle = $class['name'] . ' - UTH Forum';
-require __DIR__ . '/../includes/header.php';
+$pageTitle = $class['name'];
+include __DIR__ . '/../includes/header.php';
 ?>
-<div class="class-header">
-  <h2 style="color:#fff;"><?= e($class['name']) ?></h2>
-  <p><?= e($class['description']) ?></p>
-  <p>Giảng viên: <?= e($class['teacher_name']) ?> · <?= count($members) ?> thành viên</p>
-  <?php if ($isTeacher || $isAdmin): ?>
-    <p style="margin-top:10px;">Mã mời lớp: <span class="code"><?= e($class['invite_code']) ?></span></p>
+
+<div class="page-header">
+  <div>
+    <h1><?= e($class['name']) ?></h1>
+    <p class="text-muted">Giảng viên: <?= e($class['teacher_name']) ?></p>
+  </div>
+  <?php if ($isOwner || $isAdmin): ?>
+    <span class="role-badge">Mã lớp: <?= e($class['invite_code']) ?></span>
   <?php endif; ?>
 </div>
 
-<div class="row">
-  <section style="flex:2;min-width:0;">
-    <?php if ($isTeacher): ?>
-      <div class="box" style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="../post_create.php" class="btn btn-red btn-sm">Đăng thông báo</a>
-        <a href="upload_material.php?id=<?= (int)$class['id'] ?>" class="btn btn-teal btn-sm">Tải lên tài liệu / bài tập</a>
-        <a href="../chat/index.php?class_id=<?= (int)$class['id'] ?>" class="btn btn-outline btn-sm">Chat nhóm lớp</a>
-      </div>
-    <?php elseif ($isMember): ?>
-      <div class="box" style="margin-bottom:16px;">
-        <a href="../chat/index.php?class_id=<?= (int)$class['id'] ?>" class="btn btn-outline btn-sm">Chat nhóm lớp</a>
-      </div>
-    <?php endif; ?>
+<p><?= nl2br(e($class['description'])) ?></p>
 
-    <div class="box">
-      <h3>Thông báo & thảo luận</h3>
-      <?php if (!$posts): ?><p style="color:var(--muted);">Chưa có thông báo nào.</p><?php endif; ?>
-      <?php foreach ($posts as $p): ?>
-        <div class="post-card">
-          <div class="avatar"><?= e(mb_strtoupper(mb_substr($p['full_name'] ?: $p['username'], 0, 1))) ?></div>
-          <div style="flex:1;">
-            <div class="post-meta">
-              <strong><?= e($p['full_name'] ?: $p['username']) ?></strong>
-              <span>· <?= time_ago($p['created_at']) ?></span>
-              <?php if ($p['is_announcement']): ?><span class="tag tag-urgent">Khẩn cấp</span><?php endif; ?>
-            </div>
-            <h3 class="post-title"><a href="../post_view.php?id=<?= (int)$p['id'] ?>"><?= e($p['title']) ?></a></h3>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-
-    <div class="box" style="margin-top:16px;">
-      <h3>Tài liệu & bài tập</h3>
-      <?php if (!$materials): ?><p style="color:var(--muted);">Chưa có tài liệu nào.</p><?php endif; ?>
-      <?php foreach ($materials as $m): ?>
-        <div class="material-item">
-          <span><i class="fa-solid fa-file"></i> <?= e($m['original_name']) ?>
-            <span style="color:var(--muted);font-size:12px;"> — <?= round($m['filesize']/1024) ?> KB, <?= e($m['full_name'] ?: $m['username']) ?></span>
-          </span>
-          <a class="btn btn-outline btn-sm" href="../<?= e(UPLOAD_URL . $m['stored_name']) ?>" download>Tải xuống</a>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </section>
-
-  <aside style="flex:1;min-width:240px;">
-    <div class="box">
-      <h3>Thành viên (<?= count($members) ?>)</h3>
-      <?php foreach ($members as $m): ?>
-        <div class="inner-box">
-          <div class="avatar-sm"><?= e(mb_strtoupper(mb_substr($m['full_name'] ?: $m['username'], 0, 1))) ?></div>
-          <div style="font-size:13px;"><?= e($m['full_name'] ?: $m['username']) ?></div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </aside>
+<div class="page-header">
+  <h2>Tài liệu</h2>
+  <a href="<?= e(BASE_URL) ?>/class/materials.php?id=<?= $classId ?>" class="btn btn-sm">Xem tài liệu</a>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+
+<h2>Bài viết &amp; thông báo</h2>
+
+<?php if (empty($posts)): ?>
+  <div class="empty-state">
+    <h3>Chưa có bài viết nào trong lớp này</h3>
+  </div>
+<?php else: ?>
+  <?php foreach ($posts as $post): ?>
+    <div class="post <?= $post['is_announcement'] ? 'urgent' : '' ?>">
+      <div class="post-top">
+        <div class="post-meta">
+          <div class="name"><?= e($post['full_name'] ?: $post['username']) ?></div>
+          <div class="role"><?= date('d/m/Y H:i', strtotime($post['created_at'])) ?></div>
+        </div>
+        <?php if ($post['is_announcement']): ?>
+          <span class="tag urgent">Thông báo khẩn</span>
+        <?php endif; ?>
+      </div>
+      <h3><?= e($post['title']) ?></h3>
+      <div class="post-body">
+        <?= $post['content'] /* HTML từ rich text editor — đã được lọc/sanitize khi lưu vào DB */ ?>
+      </div>
+    </div>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

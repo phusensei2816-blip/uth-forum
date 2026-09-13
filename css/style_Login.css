@@ -590,3 +590,13 @@
     grid-template-columns: 1fr;
   }
 }
+.field-error {
+  color: #b32620;
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.input-wrap.has-error input,
+.login-field.has-error select {
+  border-color: #b32620 !important;
+}
+.login-field.has-error > label { color: #b32620; }

@@ -45,7 +45,7 @@ $comments = $commentStmt->fetchAll();
 $pageTitle = $post['title'] . ' - UTH Forum';
 require __DIR__ . '/includes/header.php';
 ?>
-<script>window.CSRF = <?= json_encode(csrf_token()) ?>;</script>
+<script>window.CSRF = <?= json_encode(csrf_token()) ?>; window.POST_ID = <?= (int)$post['id'] ?>;</script>
 <div class="row">
   <section style="flex:3;min-width:0;">
     <div class="card">
@@ -73,46 +73,145 @@ require __DIR__ . '/includes/header.php';
         </div>
       <?php endif; ?>
 
-      <div class="post-actions" style="margin-top:16px;">
-        <button class="like-btn <?= $liked ? 'liked' : '' ?>" data-post-id="<?= (int)$post['id'] ?>" <?= $user ? '' : 'disabled' ?>>
-          <i class="fa-solid fa-heart"></i> <span class="count"><?= $likeCount ?></span>
-        </button>
-        <span><i class="fa-solid fa-comment"></i> <?= count($comments) ?> bình luận</span>
-        <?php if ($isOwner): ?>
-          <a href="post_edit.php?id=<?= (int)$post['id'] ?>">Sửa</a>
-          <a href="post_delete.php?id=<?= (int)$post['id'] ?>" onclick="return confirm('Xóa bài viết này?')">Xóa</a>
-        <?php endif; ?>
-      </div>
+      <div class="fb-post-stats">
+    <div class="fb-like-summary">
+        <span class="fb-like-icon">
+            <i class="fa-solid fa-thumbs-up"></i>
+        </span>
+
+        <span class="like-count">
+            <?= $likeCount ?>
+        </span>
     </div>
 
-    <div class="card" style="margin-top:16px;">
-      <h3>Bình luận</h3>
-      <?php foreach ($comments as $c): ?>
-        <div class="comment">
-          <div class="avatar" style="width:34px;height:34px;font-size:13px;"><?= e(mb_strtoupper(mb_substr($c['full_name'] ?: $c['username'], 0, 1))) ?></div>
-          <div style="flex:1;">
-            <div class="bubble">
-              <strong><?= e($c['full_name'] ?: $c['username']) ?></strong>
-              <span style="color:var(--muted);font-size:12px;"> · <?= time_ago($c['created_at']) ?></span>
-              <p style="margin:4px 0 0;"><?= e($c['content']) ?></p>
+    <span class="comment-count">
+        <?= count($comments) ?> bình luận
+    </span>
+</div>
+
+<div class="fb-post-actions">
+
+    <?php if ($user): ?>
+
+        <button
+            type="button"
+            class="fb-action like-btn <?= $liked ? 'liked' : '' ?>"
+            data-post-id="<?= (int)$post['id'] ?>"
+        >
+            <i class="fa-solid fa-thumbs-up"></i>
+
+            <span class="like-text">
+                <?= $liked ? 'Đã thích' : 'Thích' ?>
+            </span>
+        </button>
+
+    <?php else: ?>
+
+        <button
+            type="button"
+            class="fb-action"
+            onclick="location.href='login.php'"
+        >
+            <i class="fa-regular fa-thumbs-up"></i>
+            <span>Thích</span>
+        </button>
+
+    <?php endif; ?>
+
+
+    <button
+        type="button"
+        class="fb-action comment-scroll-btn"
+    >
+        <i class="fa-regular fa-comment"></i>
+        <span>Bình luận</span>
+    </button>
+
+
+    <?php if ($isOwner): ?>
+
+        <a
+            href="post_edit.php?id=<?= (int)$post['id'] ?>"
+            class="fb-action"
+        >
+            <i class="fa-solid fa-pen"></i>
+            <span>Sửa</span>
+        </a>
+
+        <a
+            href="post_delete.php?id=<?= (int)$post['id'] ?>"
+            class="fb-action danger"
+            onclick="return confirm('Xóa bài viết này?')"
+        >
+            <i class="fa-solid fa-trash"></i>
+            <span>Xóa</span>
+        </a>
+
+    <?php endif; ?>
+
+</div>
+    </div>
+
+    <div class="card fb-comments-card" id="comments" data-post-id="<?= (int)$post['id'] ?>">
+      <div class="fb-comments-header">
+        <h3>Bình luận</h3>
+        <span class="fb-comment-total"><?= count($comments) ?></span>
+      </div>
+
+      <div class="fb-comments-list">
+        <?php if (!$comments): ?>
+          <div class="no-comments">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</div>
+        <?php else: ?>
+          <?php foreach ($comments as $c): ?>
+            <div class="fb-comment" data-comment-id="<?= (int)$c['id'] ?>">
+              <div class="avatar fb-comment-avatar">
+                <?= e(mb_strtoupper(mb_substr($c['full_name'] ?: $c['username'], 0, 1))) ?>
+              </div>
+
+              <div class="fb-comment-content">
+                <div class="fb-comment-bubble">
+                  <div class="fb-comment-name">
+                    <?= e($c['full_name'] ?: $c['username']) ?>
+                  </div>
+                  <div class="fb-comment-text">
+                    <?= e($c['content']) ?>
+                  </div>
+                </div>
+
+                <div class="fb-comment-meta">
+                  <span><?= e(time_ago($c['created_at'])) ?></span>
+                  <?php if ($user && ($user['id'] == $c['user_id'] || $isClassTeacher || $isAdmin)): ?>
+                    <a href="comment_delete.php?id=<?= (int)$c['id'] ?>&post_id=<?= (int)$post['id'] ?>"
+                       onclick="return confirm('Xóa bình luận này?')">Xóa</a>
+                  <?php endif; ?>
+                </div>
+              </div>
             </div>
-            <?php if ($user && ($user['id'] == $c['user_id'] || $isClassTeacher || $isAdmin)): ?>
-              <a href="comment_delete.php?id=<?= (int)$c['id'] ?>&post_id=<?= (int)$post['id'] ?>"
-                 style="font-size:12px;color:var(--red);" onclick="return confirm('Xóa bình luận này?')">Xóa</a>
-            <?php endif; ?>
-          </div>
-        </div>
-      <?php endforeach; ?>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </div>
 
       <?php if ($user): ?>
-        <form method="post" action="comment_add.php" class="comment-form">
+        <form method="post" action="comment_add.php" class="fb-comment-form" id="commentForm">
           <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
           <input type="hidden" name="post_id" value="<?= (int)$post['id'] ?>">
-          <textarea name="content" placeholder="Viết bình luận..." required></textarea>
-          <button type="submit" class="btn btn-teal btn-sm">Gửi</button>
+
+          <div class="avatar fb-input-avatar">
+            <?= e(mb_strtoupper(mb_substr($user['full_name'] ?: $user['username'], 0, 1))) ?>
+          </div>
+
+          <div class="fb-comment-input-wrap">
+            <textarea id="commentInput" name="content" rows="1"
+                      placeholder="Viết bình luận..." required></textarea>
+            <button type="submit" class="fb-send-comment" title="Gửi bình luận">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
         </form>
       <?php else: ?>
-        <p style="font-size:14px;"><a href="login.php" style="color:var(--teal);">Đăng nhập</a> để bình luận.</p>
+        <p class="fb-login-comment">
+          <a href="login.php">Đăng nhập</a> để bình luận.
+        </p>
       <?php endif; ?>
     </div>
   </section>

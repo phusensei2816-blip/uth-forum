@@ -1,69 +1,91 @@
 <?php
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_role(['student']);
-$user = current_user();
 
-$error = '';
+$user = current_user();
+$errors = [];
+$success = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $code = strtoupper(trim($_POST['invite_code'] ?? ''));
-    $stmt = $pdo->prepare('SELECT id, name FROM classes WHERE invite_code = ?');
-    $stmt->execute([$code]);
-    $class = $stmt->fetch();
 
-    if (!$class) {
-        $error = 'Mã mời không hợp lệ.';
+    if ($code === '') {
+        $errors[] = 'Vui lòng nhập mã lớp.';
     } else {
-        $chk = $pdo->prepare('SELECT id FROM class_members WHERE class_id=? AND user_id=?');
-        $chk->execute([$class['id'], $user['id']]);
-        if ($chk->fetch()) {
-            flash('info', 'Bạn đã là thành viên của lớp "' . $class['name'] . '".');
+        $stmt = $pdo->prepare('SELECT id, name FROM classes WHERE invite_code = ?');
+        $stmt->execute([$code]);
+        $class = $stmt->fetch();
+
+        if (!$class) {
+            $errors[] = 'Mã lớp không hợp lệ.';
         } else {
-            $pdo->prepare('INSERT INTO class_members (class_id, user_id) VALUES (?,?)')->execute([$class['id'], $user['id']]);
-            flash('success', 'Đã tham gia lớp "' . $class['name'] . '".');
+            $check = $pdo->prepare('SELECT id FROM class_members WHERE class_id = ? AND user_id = ?');
+            $check->execute([$class['id'], $user['id']]);
+
+            if ($check->fetch()) {
+                $errors[] = 'Bạn đã tham gia lớp này rồi.';
+            } else {
+                $insert = $pdo->prepare('INSERT INTO class_members (class_id, user_id) VALUES (?, ?)');
+                $insert->execute([$class['id'], $user['id']]);
+                $success = 'Đã tham gia lớp "' . $class['name'] . '" thành công.';
+            }
         }
-        header('Location: view.php?id=' . $class['id']);
-        exit;
     }
 }
 
-$stmt = $pdo->prepare('SELECT c.*, u.full_name AS teacher_name, COUNT(cm2.id) AS members
-                        FROM classes c
-                        JOIN class_members cm ON cm.class_id = c.id AND cm.user_id = ?
-                        JOIN users u ON u.id = c.teacher_id
-                        LEFT JOIN class_members cm2 ON cm2.class_id = c.id
-                        GROUP BY c.id');
+$stmt = $pdo->prepare(
+    'SELECT c.* FROM classes c
+     JOIN class_members cm ON cm.class_id = c.id
+     WHERE cm.user_id = ?
+     ORDER BY cm.joined_at DESC'
+);
 $stmt->execute([$user['id']]);
 $myClasses = $stmt->fetchAll();
 
-$pageTitle = 'Lớp học của tôi - UTH Forum';
-require __DIR__ . '/../includes/header.php';
+$pageTitle = 'Lớp của tôi';
+include __DIR__ . '/../includes/header.php';
 ?>
-<div class="row">
-  <section style="flex:2;min-width:0;">
-    <h2>Lớp học của tôi</h2>
-    <?php if (!$myClasses): ?>
-      <div class="box"><p style="color:var(--muted);">Bạn chưa tham gia lớp học nào.</p></div>
-    <?php endif; ?>
-    <?php foreach ($myClasses as $c): ?>
-      <div class="box" style="margin-bottom:12px;">
-        <h3><a href="view.php?id=<?= (int)$c['id'] ?>"><?= e($c['name']) ?></a></h3>
-        <p style="color:var(--muted);font-size:14px;">GV: <?= e($c['teacher_name']) ?> · <?= (int)$c['members'] ?> thành viên</p>
-      </div>
-    <?php endforeach; ?>
-  </section>
-  <aside style="flex:1;min-width:260px;">
-    <div class="card">
-      <h3>Tham gia lớp bằng mã mời</h3>
-      <?php if ($error): ?><div class="alert alert-error"><?= e($error) ?></div><?php endif; ?>
-      <form method="post">
-        <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
-        <div class="form-group">
-          <input type="text" name="invite_code" placeholder="Nhập mã mời (VD: A1B2C3)" style="text-transform:uppercase;" required>
-        </div>
-        <button type="submit" class="btn btn-teal" style="width:100%;">Tham gia</button>
-      </form>
+
+<div class="form-card">
+  <h1>Tham gia lớp học</h1>
+
+  <?php foreach ($errors as $err): ?>
+    <div class="alert alert-error"><?= e($err) ?></div>
+  <?php endforeach; ?>
+  <?php if ($success): ?>
+    <div class="alert alert-success"><?= e($success) ?></div>
+  <?php endif; ?>
+
+  <form method="post" class="join-form">
+    <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
+    <div class="form-group">
+      <label for="invite_code">Mã lớp (do giảng viên cung cấp)</label>
+      <input type="text" id="invite_code" name="invite_code" placeholder="VD: A1B2C3" required>
     </div>
-  </aside>
+    <button type="submit" class="btn btn-red">Tham gia</button>
+  </form>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+
+<div class="page-header">
+  <h1>Lớp đã tham gia</h1>
+</div>
+
+<?php if (empty($myClasses)): ?>
+  <div class="empty-state">
+    <h3>Bạn chưa tham gia lớp nào</h3>
+    <p>Nhập mã lớp ở trên để bắt đầu.</p>
+  </div>
+<?php else: ?>
+  <div class="class-grid">
+    <?php foreach ($myClasses as $class): ?>
+      <a href="<?= e(BASE_URL) ?>/class/view.php?id=<?= (int)$class['id'] ?>" class="class-card">
+        <h3><?= e($class['name']) ?></h3>
+        <p><?= e($class['description']) ?></p>
+      </a>
+    <?php endforeach; ?>
+  </div>
+<?php endif; ?>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
