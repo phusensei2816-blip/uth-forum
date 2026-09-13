@@ -65,6 +65,7 @@ $msgs = $msgs->fetchAll();
 $lastId = $msgs ? end($msgs)['id'] : 0;
 
 $pageTitle = 'Trò chuyện - UTH Forum';
+$pageCss = 'chat.css';
 require __DIR__ . '/../includes/header.php';
 ?>
 <script>

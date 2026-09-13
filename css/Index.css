@@ -18,12 +18,12 @@
     position: absolute;
     z-index: -2;
     inset: 0;
-    width: 100%;
+    width: 150%;
     height: 100%;
     object-fit: contain;
     object-position: center;
-    transform: scale(1.2);
-    margin: 0 0 0 220px;
+    transform: scale(1.3);
+    margin: 0 0 0 300px;
 }
 
 .home-hero::before {

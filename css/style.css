@@ -1,6 +1,5 @@
 /* =========================================================
    UTH Forum — design tokens
-   Colors pulled from the university mark: teal + red on white
    ========================================================= */
 :root {
   --teal: #0e8074;
@@ -16,14 +15,24 @@
   --font: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
+/* ---------- Reset / nền chung ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--ink);
   line-height: 1.5;
 }
+
 a {
   color: inherit;
   text-decoration: none;
@@ -35,16 +44,19 @@ img {
 }
 
 .container {
-  /* max-width: 1200px; */
   margin: 0;
   padding: 0;
 }
 
-/* Header */
+/* =========================================================
+   Header
+   ========================================================= */
 .header {
   background: var(--card);
   border-bottom: 3px solid var(--teal);
   position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
@@ -54,10 +66,16 @@ img {
   padding: 12px 30px;
 }
 
-.logo img {
-  height: 42px;
+.logo {
+  flex-shrink: 0;
 }
 
+.logo img {
+  height: 42px;
+  width: auto;
+}
+
+/* Thanh tìm kiếm */
 .nav-search {
   flex: 1;
   max-width: 800px;
@@ -77,11 +95,17 @@ img {
 
 .nav-search input {
   width: 100%;
-  padding: 9px 14px;
+  padding: 9px 40px 9px 14px;
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--bg);
   font-size: 14px;
+  font-family: inherit;
+}
+
+.nav-search input:focus {
+  outline: none;
+  border-color: var(--teal);
 }
 
 .nav-search i {
@@ -90,11 +114,14 @@ img {
   top: 50%;
   transform: translateY(-50%);
   color: var(--muted);
+  pointer-events: none;
 }
 
+/* Nhóm menu */
 .nav-group {
   margin-left: auto;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .nav-group ul {
@@ -102,23 +129,91 @@ img {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 50px;
+  gap: 28px;
   margin: 0 30px;
   padding: 0;
 }
 
+.nav-group li {
+  margin: 0;
+  padding: 0;
+}
+
 .nav-group a {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 15px;
   white-space: nowrap;
+  text-decoration: none;
 }
 
+/* Menu đang được chọn: chữ đậm và gạch chân */
+.nav-group a.active {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
+.nav-group a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  background: var(--teal);
+  border-radius: 2px;
+}
+
+/* Nút đăng ký khi chưa đăng nhập */
 .nav-group .btn-red {
   padding: 8px 16px;
 }
 
+/* Tài khoản: nút đăng xuất ở trên, vai trò và tên ở dưới */
+.nav-group .nav-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-group .logout-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--teal);
+  color: #fff;
+  border: 1px solid var(--teal);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nav-group .logout-button:hover {
+  background: var(--teal-dark);
+  border-color: var(--teal-dark);
+}
+
+/* Không gạch chân nút đăng xuất */
+.nav-group .logout-button::after {
+  display: none;
+}
+
+.nav-group .account-info {
+  display: block;
+  max-width: 190px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Nút nhỏ dùng chung */
 .btn-sm {
   font-size: 12px;
   padding: 3px 10px;
@@ -128,19 +223,48 @@ img {
   font-weight: 600;
 }
 
-/* ---------- Forms ---------- */
-.form-group { margin-bottom: 14px; }
-input[type=text], input[type=email], input[type=password], input[type=number],
-textarea, select {
-  width: 100%; padding: 10px 12px; border: 1px solid var(--line);
-  border-radius: 6px; font-size: 14px; font-family: inherit;
+/* =========================================================
+   Forms
+   ========================================================= */
+.form-group {
+  margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
   background: #fff;
 }
-label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
-.form-group.check { display: flex; align-items: center; gap: 8px; }
-.form-group.check input { width: auto; }
 
-/* ---------- Cards / layout ---------- */
+label {
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.form-group.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group.check input {
+  width: auto;
+}
+
+/* =========================================================
+   Cards / layout
+   ========================================================= */
 main {
   padding: 28px 0 60px;
 }
@@ -151,150 +275,418 @@ main {
   gap: 20px;
 }
 
-.box, .card {
+.box,
+.card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 18px;
 }
 
-h2 { font-size: 22px;
+h2 {
+  font-size: 22px;
   margin: 0 0 14px;
 }
 
-h3 { font-size: 17px;
+h3 {
+  font-size: 17px;
   margin: 0 0 10px;
 }
 
-/* Auth banner: pending approval / announcement flags */
-.alert { padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 14px; }
-.alert-success { background: #e6f6e9; color: #1c6b34; }
-.alert-error   { background: #fbe7e6; color: var(--red-dark); }
-.alert-info    { background: #e8f3f2; color: var(--teal-dark); }
+/* =========================================================
+   Alerts / trạng thái
+   ========================================================= */
+.alert {
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
 
-.tag { display: inline-block; font-size: 12px; padding: 2px 9px; border-radius: 10px; font-weight: 600; }
-.tag-pending  { background: #fff3d6; color: #9a6c00; }
-.tag-approved { background: #e6f6e9; color: #1c6b34; }
-.tag-rejected { background: #fbe7e6; color: var(--red-dark); }
-.tag-urgent   { background: var(--red); color: #fff; }
+.alert-success {
+  background: #e6f6e9;
+  color: #1c6b34;
+}
 
-/* ---------- Post feed ---------- */
-.post-card { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
-.post-card:last-child { border-bottom: none; }
-.post-card .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--teal); color: #fff;
-  display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-.post-meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 8px; }
-.post-title { font-size: 17px; margin: 2px 0 4px; }
-.post-actions { display: flex; gap: 16px; font-size: 13px; color: var(--muted); margin-top: 8px; }
-.post-actions button { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 13px; display: flex; gap: 5px; align-items: center; }
-.post-actions button.liked { color: var(--red); font-weight: 600; }
-.post-content { font-size: 15px; }
-.post-content img { border-radius: 6px; margin: 8px 0; }
+.alert-error {
+  background: #fbe7e6;
+  color: var(--red-dark);
+}
 
-/* ---------- Comments ---------- */
-.comment { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
-.comment .bubble { background: var(--bg); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
-.comment-form { display: flex; gap: 8px; margin-top: 12px; }
-.comment-form textarea { flex: 1; min-height: 42px; }
+.alert-info {
+  background: #e8f3f2;
+  color: var(--teal-dark);
+}
 
-/* ---------- Editor toolbar (rich text) ---------- */
-.editor-toolbar { display: flex; gap: 4px; border: 1px solid var(--line); border-bottom: none;
-  border-radius: 6px 6px 0 0; padding: 6px; background: var(--bg); }
-.editor-toolbar button { border: none; background: #fff; border-radius: 4px; width: 30px; height: 30px; cursor: pointer; }
-.editor-toolbar button:hover { background: var(--line); }
-.editor-content { border: 1px solid var(--line); border-radius: 0 0 6px 6px; min-height: 180px;
-  padding: 12px; background: #fff; font-size: 15px; }
-.editor-content:focus { outline: none; border-color: var(--teal); }
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-weight: 600;
+}
 
-/* ---------- Sidebar boxes ---------- */
-.sidebar .box { margin-bottom: 18px; }
-.sidebar .box h3 { display: flex; justify-content: space-between; align-items: center; }
-.sidebar .box a.view-all { font-size: 12px; color: var(--teal); }
-.inner-box { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
-.inner-box:first-of-type { border-top: none; }
-.inner-box .avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff;
-  display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+.tag-pending {
+  background: #fff3d6;
+  color: #9a6c00;
+}
 
-/* ---------- Stats (admin dashboard) ---------- */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-.stat-box { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
-.stat-box .num { font-size: 28px; font-weight: 700; color: var(--teal-dark); }
-.stat-box .label { font-size: 13px; color: var(--muted); }
+.tag-approved {
+  background: #e6f6e9;
+  color: #1c6b34;
+}
 
-/* ---------- Tables ---------- */
-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-th { color: var(--muted); font-weight: 600; font-size: 13px; }
-tr:hover td { background: var(--bg); }
+.tag-rejected {
+  background: #fbe7e6;
+  color: var(--red-dark);
+}
 
-/* ---------- Pagination ---------- */
-.pagination { display: flex; gap: 6px; margin-top: 18px; }
-.pagination .page { padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
-.pagination .page.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.tag-urgent {
+  background: var(--red);
+  color: #fff;
+}
 
-/* ---------- Chat ---------- */
-.chat-wrap { display: flex; height: 70vh; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.chat-list { width: 280px; border-right: 1px solid var(--line); overflow-y: auto; }
-.chat-list .conv { padding: 12px 16px; border-bottom: 1px solid var(--line); cursor: pointer; display: flex; gap: 10px; align-items: center; }
-.chat-list .conv:hover, .chat-list .conv.active { background: var(--bg); }
-.chat-main { flex: 1; display: flex; flex-direction: column; }
-.chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-.msg { max-width: 60%; padding: 8px 12px; border-radius: 12px; font-size: 14px; }
-.msg.mine { align-self: flex-end; background: var(--teal); color: #fff; }
-.msg.theirs { align-self: flex-start; background: var(--bg); }
-.chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
-.chat-input textarea { flex: 1; min-height: 40px; }
+/* =========================================================
+   Post feed
+   ========================================================= */
+.post-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
 
-/* ---------- Class page ---------- */
-.class-header { background: linear-gradient(120deg, var(--teal), var(--teal-dark)); color: #fff;
-  border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
-.class-header .code { font-family: monospace; font-size: 20px; background: rgba(255,255,255,.15); padding: 4px 10px; border-radius: 6px; letter-spacing: 2px; }
-.material-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.material-item:last-child { border-bottom: none; }
+.post-card:last-child {
+  border-bottom: none;
+}
 
-/* ---------- Footer ---------- */
+.post-card .avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.post-meta {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 8px;
+}
+
+.post-title {
+  font-size: 17px;
+  margin: 2px 0 4px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.post-actions button.liked {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.post-content {
+  font-size: 15px;
+}
+
+.post-content img {
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+/* =========================================================
+   Comments
+   ========================================================= */
+.comment {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.comment .bubble {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-form textarea {
+  flex: 1;
+  min-height: 42px;
+}
+
+/* =========================================================
+   Editor toolbar
+   ========================================================= */
+.editor-toolbar {
+  display: flex;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 6px;
+  background: var(--bg);
+}
+
+.editor-toolbar button {
+  border: none;
+  background: #fff;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background: var(--line);
+}
+
+.editor-content {
+  border: 1px solid var(--line);
+  border-radius: 0 0 6px 6px;
+  min-height: 180px;
+  padding: 12px;
+  background: #fff;
+  font-size: 15px;
+}
+
+.editor-content:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+/* =========================================================
+   Sidebar boxes
+   ========================================================= */
+.sidebar .box {
+  margin-bottom: 18px;
+}
+
+.sidebar .box h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar .box a.view-all {
+  font-size: 12px;
+  color: var(--teal);
+}
+
+.inner-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.inner-box:first-of-type {
+  border-top: none;
+}
+
+.inner-box .avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   Stats — admin dashboard
+   ========================================================= */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.stat-box .num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+
+.stat-box .label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* =========================================================
+   Tables
+   ========================================================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+tr:hover td {
+  background: var(--bg);
+}
+
+/* =========================================================
+   Pagination
+   ========================================================= */
+.pagination {
+  display: flex;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.pagination .page {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.pagination .page.active {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+
+/* =========================================================
+   Class header / materials
+   Các kiểu trang lớp chi tiết nằm trong class.css
+   ========================================================= */
+.class-header {
+  background: linear-gradient(120deg, var(--teal), var(--teal-dark));
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.class-header .code {
+  font-family: monospace;
+  font-size: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 2px;
+}
+
+.material-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.material-item:last-child {
+  border-bottom: none;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
 .site-footer {
-    background: #10201d;
-    color: #c9d6d3;
-    padding: 30px 0;
-    margin-top: 30px;
+  background: #10201d;
+  color: #c9d6d3;
+  padding: 30px 0;
+  margin-top: 30px;
 }
 
 .footer-container {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 40px;
-    gap: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 40px;
+  gap: 100px;
 }
 
 .footer-nav a {
-    color: #c9d6d3;
-    font-size: 14px;
-    text-decoration: none;
+  color: #c9d6d3;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .footer-nav a:hover {
-    color: #ffffff;
-    text-decoration: underline;
+  color: #fff;
+  text-decoration: underline;
 }
 
 .footer-description,
 .footer-bottom p {
-    font-size: 13px;
-    color: #8fa39e;
-    margin: 0 40px;
-    line-height: 1.6;
-    border-top: 1px solid rgba(201, 214, 211, 0.2);
-    padding-top: 12px;
+  font-size: 13px;
+  color: #8fa39e;
+  margin: 0 40px;
+  line-height: 1.6;
+  border-top: 1px solid rgba(201, 214, 211, 0.2);
+  padding-top: 12px;
 }
 
-/* ---------- Responsive ---------- */
+/* =========================================================
+   Responsive — tablet và điện thoại
+   ========================================================= */
 @media (max-width: 860px) {
   .row {
     flex-direction: column;
@@ -302,23 +694,46 @@ tr:hover td { background: var(--bg); }
 
   .header-content {
     flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .nav-search {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .nav-group {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .nav-group ul {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 14px 20px;
+    margin: 0;
+  }
+
+  .nav-group .nav-account {
+    align-items: flex-end;
+  }
+
+  .nav-group .account-info {
+    text-align: right;
   }
 
   .site-footer {
     padding: 24px 0;
-}
+  }
 
-.footer-container {
+  .footer-container {
     padding: 0 16px;
-}
+  }
 
-.footer-nav {
+  .footer-nav {
     gap: 12px 16px;
-}
-
-  .nav-search {
-    order: 3;
-    max-width: 100%;
   }
 
   .chat-wrap {
@@ -326,8 +741,41 @@ tr:hover td { background: var(--bg); }
     height: auto;
   }
 
-  .chat-list { 
+  .chat-list {
     width: 100%;
     max-height: 200px;
+  }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 480px) {
+  .header-content {
+    padding: 12px 16px;
+  }
+
+  .nav-group ul {
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .nav-group a {
+    font-size: 14px;
+  }
+
+  .nav-group .nav-account {
+    align-items: flex-start;
+  }
+
+  .nav-group .account-info {
+    text-align: left;
+  }
+
+  .footer-nav {
+    margin: 0;
+  }
+
+  .footer-description,
+  .footer-bottom p {
+    margin: 0;
   }
 }
