@@ -18,18 +18,21 @@ $recentVisits = $pdo->query('SELECT * FROM visits ORDER BY visited_at DESC LIMIT
 $pageTitle = 'Bảng điều khiển quản trị - UTH Forum';
 require __DIR__ . '/../includes/header.php';
 ?>
+<div class="admin-layout">
+<?php require __DIR__ . '/../includes/admin_nav.php'; ?>
+<div class="admin-main">
 <h2>Bảng điều khiển quản trị</h2>
 <div class="stat-grid">
-  <div class="stat-box"><div class="num"><?= $totalUsers ?></div><div class="label">Tổng người dùng</div></div>
-  <div class="stat-box"><div class="num"><?= $totalStudents ?></div><div class="label">Sinh viên</div></div>
-  <div class="stat-box"><div class="num"><?= $totalTeachers ?></div><div class="label">Giảng viên</div></div>
-  <div class="stat-box"><div class="num"><?= $totalClasses ?></div><div class="label">Lớp học</div></div>
-  <div class="stat-box"><div class="num"><?= $totalPosts ?></div><div class="label">Tổng bài viết</div></div>
-  <div class="stat-box"><div class="num" style="color:var(--red);"><?= $pendingPosts ?></div><div class="label">Chờ duyệt</div></div>
-  <div class="stat-box"><div class="num"><?= $totalFiles ?></div><div class="label">Tệp đã tải lên</div></div>
-  <div class="stat-box"><div class="num"><?= round($storageUsed/1024/1024, 1) ?> MB</div><div class="label">Dung lượng lưu trữ</div></div>
-  <div class="stat-box"><div class="num"><?= $todayVisits ?></div><div class="label">Lượt truy cập hôm nay</div></div>
-  <div class="stat-box"><div class="num"><?= $totalVisits ?></div><div class="label">Tổng lượt truy cập</div></div>
+  <div class="stat-box"><i class="fa-solid fa-users stat-icon"></i><div class="num"><?= $totalUsers ?></div><div class="label">Tổng người dùng</div></div>
+  <div class="stat-box"><i class="fa-solid fa-user-graduate stat-icon"></i><div class="num"><?= $totalStudents ?></div><div class="label">Sinh viên</div></div>
+  <div class="stat-box"><i class="fa-solid fa-chalkboard-user stat-icon"></i><div class="num"><?= $totalTeachers ?></div><div class="label">Giảng viên</div></div>
+  <div class="stat-box"><i class="fa-solid fa-school stat-icon"></i><div class="num"><?= $totalClasses ?></div><div class="label">Lớp học</div></div>
+  <div class="stat-box"><i class="fa-solid fa-file-lines stat-icon"></i><div class="num"><?= $totalPosts ?></div><div class="label">Tổng bài viết</div></div>
+  <div class="stat-box"><i class="fa-solid fa-flag stat-icon"></i><div class="num" style="color:var(--red);"><?= $pendingPosts ?></div><div class="label">Chờ duyệt</div></div>
+  <div class="stat-box"><i class="fa-solid fa-folder-open stat-icon"></i><div class="num"><?= $totalFiles ?></div><div class="label">Tệp đã tải lên</div></div>
+  <div class="stat-box"><i class="fa-solid fa-database stat-icon"></i><div class="num"><?= round($storageUsed/1024/1024, 1) ?> MB</div><div class="label">Dung lượng lưu trữ</div></div>
+  <div class="stat-box"><i class="fa-solid fa-eye stat-icon"></i><div class="num"><?= $todayVisits ?></div><div class="label">Lượt truy cập hôm nay</div></div>
+  <div class="stat-box"><i class="fa-solid fa-chart-line stat-icon"></i><div class="num"><?= $totalVisits ?></div><div class="label">Tổng lượt truy cập</div></div>
 </div>
 
 <div class="row">
@@ -49,5 +52,7 @@ require __DIR__ . '/../includes/header.php';
     <p><a href="users.php" class="btn btn-teal btn-sm">Quản lý người dùng</a></p>
     <p><a href="files.php" class="btn btn-outline btn-sm">Quản lý tệp tin</a></p>
   </div>
+</div>
+</div>
 </div>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

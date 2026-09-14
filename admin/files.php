@@ -28,6 +28,9 @@ $storageUsed = (int)$pdo->query('SELECT COALESCE(SUM(filesize),0) FROM files')->
 $pageTitle = 'Quản lý tệp tin - UTH Forum';
 require __DIR__ . '/../includes/header.php';
 ?>
+<div class="admin-layout">
+<?php require __DIR__ . '/../includes/admin_nav.php'; ?>
+<div class="admin-main">
 <h2>Quản lý tệp tin</h2>
 <p style="color:var(--muted);">Tổng dung lượng đã sử dụng: <strong><?= round($storageUsed/1024/1024, 1) ?> MB</strong> (<?= $total ?> tệp)</p>
 <div class="box">
@@ -52,5 +55,7 @@ require __DIR__ . '/../includes/header.php';
     <?php if (!$files): ?><tr><td colspan="6" style="color:var(--muted);">Chưa có tệp nào.</td></tr><?php endif; ?>
   </table>
   <?php pagination_links($page, $totalPages, 'files.php'); ?>
+</div>
+</div>
 </div>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

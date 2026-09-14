@@ -26,6 +26,9 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC LIMIT $perPag
 $pageTitle = 'Quản lý người dùng - UTH Forum';
 require __DIR__ . '/../includes/header.php';
 ?>
+<div class="admin-layout">
+<?php require __DIR__ . '/../includes/admin_nav.php'; ?>
+<div class="admin-main">
 <h2>Quản lý người dùng (<?= $total ?>)</h2>
 <div class="box">
   <table>
@@ -64,5 +67,7 @@ require __DIR__ . '/../includes/header.php';
     <?php endforeach; ?>
   </table>
   <?php pagination_links($page, $totalPages, 'users.php'); ?>
+</div>
+</div>
 </div>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

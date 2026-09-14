@@ -191,3 +191,174 @@ footer p { font-size: 12px; color: #8fa39e; margin: 4px 0; }
   .chat-wrap { flex-direction: column; height: auto; }
   .chat-list { width: 100%; max-height: 200px; }
 }
+
+/* =========================================================
+   Admin layout (bổ sung — dán vào cuối css/style.css)
+   Dùng chung cho 4 trang admin/dashboard.php, users.php,
+   moderation.php, files.php. Chỉ thêm mới, không sửa rule cũ.
+   ========================================================= */
+.admin-layout { display: flex; align-items: flex-start; gap: 22px; }
+.admin-sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 10px; position: sticky; top: 84px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.admin-sidebar a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 6px; font-size: 14px; color: var(--ink);
+}
+.admin-sidebar a i { width: 18px; text-align: center; color: var(--muted); font-size: 14px; }
+.admin-sidebar a:hover { background: var(--bg); }
+.admin-sidebar a.active { background: var(--teal); color: #fff; }
+.admin-sidebar a.active i { color: #fff; }
+.admin-sidebar a .badge {
+  margin-left: auto; background: var(--red); color: #fff; font-size: 11px;
+  padding: 1px 7px; border-radius: 10px; font-weight: 700; line-height: 1.5;
+}
+.admin-main { flex: 1; min-width: 0; }
+
+.stat-box { position: relative; overflow: hidden; }
+.stat-box i.stat-icon {
+  position: absolute; top: 14px; right: 14px; font-size: 22px; color: var(--line);
+}
+
+@media (max-width: 860px) {
+  .admin-layout { flex-direction: column; }
+  .admin-sidebar {
+    width: 100%; position: static; flex-direction: row; overflow-x: auto;
+  }
+  .admin-sidebar a { flex-shrink: 0; }
+}
+
+/* =========================================================
+   Trang chủ UTHForum — hero, thanh tìm kiếm, value-props,
+   bài viết nổi bật, thanh điều hướng dạng pill.
+   Thêm mới — dùng token riêng (--home-*) để không đụng
+   tới màu teal/đỏ đang dùng cho khu vực Admin.
+   ========================================================= */
+:root {
+  --home-green: #1B7A3D;
+  --home-green-dark: #145C2E;
+  --home-yellow: #FFC72C;
+  --home-yellow-dark: #E8A800;
+  --home-surface-2: #FFF1D9;
+}
+
+/* ---------- Thanh điều hướng (pill nav) ---------- */
+.site-nav .logo-text {
+  font-weight: 800; font-size: 1.25rem; letter-spacing: .3px;
+  color: var(--home-green); white-space: nowrap;
+}
+.site-nav .logo-text span { color: var(--ink); }
+.site-nav-pills {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  list-style: none; margin: 0; padding: 0;
+}
+.site-nav-pills a, .site-nav-pills button {
+  display: inline-block; padding: 9px 18px; border-radius: 999px;
+  font-weight: 700; font-size: .92rem; color: var(--ink);
+  background: transparent; border: none;
+}
+.site-nav-pills a.active, .site-nav-pills button.active {
+  background: var(--home-green); color: #fff;
+}
+.site-nav-pills a:hover:not(.active), .site-nav-pills button:hover:not(.active) {
+  background: var(--bg);
+}
+.site-nav-right { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.site-nav-right .nav-user-link { font-weight: 600; font-size: .92rem; color: var(--ink); }
+.nav-avatar {
+  width: 38px; height: 38px; border-radius: 50%; background: var(--home-green);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1rem; flex-shrink: 0;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: linear-gradient(135deg, var(--home-green) 0%, var(--home-green-dark) 100%);
+  color: #fff; position: relative; overflow: hidden;
+}
+.hero-slides { position: relative; height: 220px; }
+.hero-slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 20px;
+  opacity: 0; transition: opacity .6s ease; pointer-events: none;
+}
+.hero-slide.active { opacity: 1; pointer-events: auto; }
+.hero-slide h1 { font-size: clamp(1.5rem, 4vw, 2.4rem); margin: 0 0 10px; color: #fff; }
+.hero-slide h1 em { color: var(--home-yellow); font-style: normal; }
+.hero-slide p { margin: 0; max-width: 560px; color: #EAF6EE; }
+.hero-slide p::first-letter { font-size: 1.3em; color: var(--home-yellow); }
+.hero-dots { display: flex; justify-content: center; gap: 8px; padding-bottom: 18px; }
+.hero-dots button {
+  width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.45);
+  border: none; padding: 0;
+}
+.hero-dots button.active { background: var(--home-yellow); width: 22px; border-radius: 6px; }
+
+/* ---------- Thanh tìm kiếm ---------- */
+.search-bar {
+  background: var(--home-yellow);
+  display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 10px;
+  padding: 14px 20px; max-width: 1180px; margin: 0 auto;
+}
+.search-bar select, .search-bar input {
+  padding: 10px 12px; border-radius: 8px; border: 1px solid var(--home-yellow-dark);
+  background: #fff; color: var(--ink); font-size: .9rem; font-family: inherit;
+}
+.search-bar select:focus, .search-bar input:focus {
+  outline: 3px solid var(--home-green-dark); outline-offset: 1px;
+}
+.search-bar button {
+  background: var(--ink); color: var(--home-yellow); font-weight: 700;
+  border-radius: 8px; padding: 10px 18px; border: none; cursor: pointer;
+}
+.search-bar button:hover { background: var(--home-green-dark); color: #fff; }
+@media (max-width: 760px) { .search-bar { grid-template-columns: 1fr; } }
+
+/* ---------- Value props ---------- */
+.value-props {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  max-width: 1180px; margin: 30px auto; padding: 0 20px;
+}
+.value-props .vp {
+  flex: 1 1 220px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 18px; text-align: center;
+}
+.value-props .vp .icon {
+  font-size: 1.8rem; width: 56px; height: 56px; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--home-surface-2); border-radius: 50%;
+}
+.value-props .vp h3 { margin: 0 0 6px; font-size: 1.02rem; }
+.value-props .vp p { margin: 0; color: var(--muted); font-size: .88rem; }
+
+/* ---------- Bài viết nổi bật ---------- */
+.featured { max-width: 1180px; margin: 10px auto 34px; padding: 0 20px; }
+.featured h2 { font-size: 1.4rem; margin: 0 0 16px; }
+.featured h2 span { color: var(--home-green); }
+.featured-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;
+}
+.fcard {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; display: flex; flex-direction: column; transition: transform .15s ease;
+}
+.fcard:hover { transform: translateY(-4px); }
+.fcard .band { height: 8px; background: var(--home-yellow); }
+.fcard.urgent .band { background: var(--home-green); }
+.fcard-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.fcard .badge {
+  align-self: flex-start; font-size: .72rem; font-weight: 700; padding: 3px 10px;
+  border-radius: 999px; background: var(--home-surface-2); color: var(--muted);
+}
+.fcard.urgent .badge { background: var(--home-green); color: #fff; }
+.fcard h3 { margin: 0; font-size: 1rem; }
+.fcard h3 a { color: var(--ink); }
+.fcard p { margin: 0; color: var(--muted); font-size: .85rem; flex: 1; }
+.fcard .meta {
+  display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted);
+  border-top: 1px dashed var(--line); padding-top: 8px;
+}

@@ -26,6 +26,9 @@ $posts = $pdo->query("SELECT p.*, u.full_name, u.username FROM posts p JOIN user
 $pageTitle = 'Hàng đợi duyệt bài - UTH Forum';
 require __DIR__ . '/../includes/header.php';
 ?>
+<div class="admin-layout">
+<?php require __DIR__ . '/../includes/admin_nav.php'; ?>
+<div class="admin-main">
 <h2>Hàng đợi duyệt bài (<?= $total ?>)</h2>
 <div class="box">
   <?php if (!$posts): ?><p style="color:var(--muted);">Không có bài viết nào đang chờ duyệt.</p><?php endif; ?>
@@ -60,6 +63,8 @@ require __DIR__ . '/../includes/header.php';
     </div>
   <?php endforeach; ?>
   <?php pagination_links($page, $totalPages, 'moderation.php'); ?>
+</div>
+</div>
 </div>
 <script>
 function fillReason(form) {

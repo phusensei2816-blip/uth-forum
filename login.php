@@ -130,25 +130,6 @@ $pageTitle = 'Đăng nhập - UTH Forum';
                     <button type="submit" class="login-submit">Đăng nhập</button>
                 </form>
 
-                <!-- Social -->
-                <div class="social-divider">
-                    <span></span>
-                    <p>hoặc đăng nhập với</p>
-                    <span></span>
-                </div>
-
-                <div class="social-list">
-                    <button type="button" class="social-btn">
-                        <img src="img/google.png" alt="Google" class="social-icon">
-                        Google
-                    </button>
-
-                    <button type="button" class="social-btn">
-                        <img src="img/microsoft.png" alt="microsoft" class="social-icon">
-                        Microsoft
-                    </button>
-                </div>
-
                 <p class="register-text">
                     Chưa có tài khoản?
                     <a href="register.php">Đăng ký ngay</a>
