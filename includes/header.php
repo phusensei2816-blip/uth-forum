@@ -68,8 +68,8 @@ function nav_active(string $page, string $currentPage): string
                         </li>
 
                         <li>
-                            <a href="<?= e(BASE_URL) ?>/post_create.php"
-                                class="<?= nav_active('post_create.php', $currentPage) ?>">
+                            <a href="<?= e(BASE_URL) ?>/post/post_create.php"
+                                class="<?= nav_active('/postpost_create.php', $currentPage) ?>">
                                 Đăng bài
                             </a>
                         </li>
@@ -83,8 +83,8 @@ function nav_active(string $page, string $currentPage): string
                         </li>
 
                         <li>
-                            <a href="<?= e(BASE_URL) ?>/post_create.php"
-                                class="<?= nav_active('post_create.php', $currentPage) ?>">
+                            <a href="<?= e(BASE_URL) ?>/post/post_create.php"
+                                class="<?= nav_active('/postpost_create.php', $currentPage) ?>">
                                 Đăng thông báo
                             </a>
                         </li>

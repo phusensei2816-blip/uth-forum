@@ -108,6 +108,7 @@
     display: flex;
     align-items: flex-start;
     gap: 16px;
+    margin: 0 20px;
 }
 
 .left {
@@ -201,14 +202,55 @@
     margin-bottom: 0;
 }
 
+/* Mỗi danh sách có vùng cuộn riêng */
+.sidebar .highlight-list {
+    max-height: 235px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #aab8b0 transparent;
+}
+
+/* Thanh cuộn trên Chrome, Edge */
+.sidebar .highlight-list::-webkit-scrollbar {
+    width: 7px;
+}
+
+.sidebar .highlight-list::-webkit-scrollbar-thumb {
+    background: #aab8b0;
+    border-radius: 10px;
+}
+
+.sidebar .highlight-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Nội dung mỗi dòng */
+.sidebar .highlight-details {
+    min-width: 0;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.sidebar .highlight-muted {
+    color: var(--muted, #68766e);
+}
+
+.sidebar .highlight-empty {
+    margin: 0;
+    padding: 12px 4px;
+    color: var(--muted, #68766e);
+    font-size: 13px;
+}
+
 /* =================================
    BẢNG TIN CỘNG ĐỒNG
 ================================= */
 
 .left > h2 {
-    margin: 0 15px 15px;
+    margin: 0 0 25px 485px;
     color: #183b55;
-    font-size: 22px;
+    font-size: 25px;
     font-weight: 700;
 }
 

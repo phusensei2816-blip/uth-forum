@@ -34,16 +34,17 @@ $posts = $stmt->fetchAll();
 // Sidebar data
 $topClasses = $pdo->query("SELECT c.id, c.name, COUNT(cm.id) AS members
     FROM classes c LEFT JOIN class_members cm ON cm.class_id = c.id
-    GROUP BY c.id ORDER BY members DESC LIMIT 5")->fetchAll();
+    GROUP BY c.id ORDER BY members DESC LIMIT 10")->fetchAll();
 
 
 $topContributors = $pdo->query("SELECT u.username, u.full_name, COUNT(p.id) AS posts
     FROM users u JOIN posts p ON p.user_id = u.id AND p.status='approved'
-    GROUP BY u.id ORDER BY posts DESC LIMIT 5")->fetchAll();
+    GROUP BY u.id ORDER BY posts DESC LIMIT 10")->fetchAll();
 
 
 $pageTitle = 'Diễn đàn UTH';
 $pageCss = 'Index.css';
+
 require __DIR__ . '/includes/header.php';?>
 
 <?php if (!current_user()): ?>
@@ -81,11 +82,11 @@ require __DIR__ . '/includes/header.php';?>
               <span>· <?= time_ago($p['created_at']) ?></span>
               <?php if ($p['is_announcement']): ?><span class="tag tag-urgent">Khẩn cấp</span><?php endif; ?>
             </div>
-            <h3 class="post-title"><a href="post_view.php?id=<?= (int)$p['id'] ?>"><?= e($p['title']) ?></a></h3>
+            <h3 class="post-title"><a href="post/post_view.php?id=<?= (int)$p['id'] ?>"><?= e($p['title']) ?></a></h3>
             <div class="post-actions">
               <span><i class="fa-solid fa-heart"></i> <?= (int)$p['like_count'] ?></span>
               <span><i class="fa-solid fa-comment"></i> <?= (int)$p['comment_count'] ?></span>
-              <a href="post_view.php?id=<?= (int)$p['id'] ?>">Xem chi tiết</a>
+              <a href="post/post_view.php?id=<?= (int)$p['id'] ?>">Xem chi tiết</a>
             </div>
           </div>
         </div>
@@ -95,32 +96,60 @@ require __DIR__ . '/includes/header.php';?>
   </section>
 
   <aside class="sidebar">
+
+    <!-- Lớp học nổi bật -->
     <div class="box">
-      <h3>Lớp học nổi bật</h3>
-      <?php foreach ($topClasses as $c): ?>
-        <div class="inner-box">
-          <div class="avatar-sm"><?= e(mb_strtoupper(mb_substr($c['name'], 0, 1))) ?></div>
-          <div class="details" style="font-size:13px;">
-            <div><?= e($c['name']) ?></div>
-            <span style="color:var(--muted);"><?= (int)$c['members'] ?> thành viên</span>
-          </div>
+        <h3>Lớp học nổi bật</h3>
+
+        <div class="highlight-list">
+            <?php foreach ($topClasses as $c): ?>
+                <div class="inner-box">
+                    <div class="avatar-sm">
+                        <?= e(mb_strtoupper(mb_substr($c['name'], 0, 1))) ?>
+                    </div>
+
+                    <div class="details highlight-details">
+                        <div><?= e($c['name']) ?></div>
+                        <span class="highlight-muted">
+                            <?= (int)$c['members'] ?> thành viên
+                        </span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <?php if (!$topClasses): ?>
+                <p class="highlight-empty">Chưa có lớp học nào.</p>
+            <?php endif; ?>
         </div>
-      <?php endforeach; ?>
-      <?php if (!$topClasses): ?><p style="color:var(--muted);font-size:13px;">Chưa có lớp học nào.</p><?php endif; ?>
     </div>
 
+    <!-- Đóng góp nhiều nhất -->
     <div class="box">
-      <h3>Đóng góp nhiều nhất</h3>
-      <?php foreach ($topContributors as $c): ?>
-        <div class="inner-box">
-          <div class="avatar-sm"><?= e(mb_strtoupper(mb_substr($c['full_name'] ?: $c['username'], 0, 1))) ?></div>
-          <div class="details" style="font-size:13px;">
-            <div><?= e($c['full_name'] ?: $c['username']) ?></div>
-            <span style="color:var(--muted);"><?= (int)$c['posts'] ?> bài viết</span>
-          </div>
+        <h3>Đóng góp nhiều nhất</h3>
+
+        <div class="highlight-list">
+            <?php foreach ($topContributors as $c): ?>
+                <div class="inner-box">
+                    <div class="avatar-sm">
+                        <?= e(mb_strtoupper(mb_substr($c['full_name'] ?: $c['username'], 0, 1))) ?>
+                    </div>
+
+                    <div class="details highlight-details">
+                        <div>
+                            <?= e($c['full_name'] ?: $c['username']) ?>
+                        </div>
+                        <span class="highlight-muted">
+                            <?= (int)$c['posts'] ?> bài viết
+                        </span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <?php if (!$topContributors): ?>
+                <p class="highlight-empty">Chưa có dữ liệu.</p>
+            <?php endif; ?>
         </div>
-      <?php endforeach; ?>
-      <?php if (!$topContributors): ?><p style="color:var(--muted);font-size:13px;">Chưa có dữ liệu.</p><?php endif; ?>
     </div>
-  </aside>
+
+</aside>
 </div>

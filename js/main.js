@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.like-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const postId = btn.dataset.postId;
-      const res = await fetch('like_toggle.php', {
+      const res = await fetch('/uth-forum-main/like_toggle.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'post_id=' + encodeURIComponent(postId) + '&csrf=' + encodeURIComponent(window.CSRF || '')

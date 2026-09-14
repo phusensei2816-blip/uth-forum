@@ -22,5 +22,5 @@ $canDelete = $user['id'] == $comment['user_id']
 if (!$canDelete) { http_response_code(403); die('Bạn không có quyền xóa bình luận này.'); }
 
 $pdo->prepare('DELETE FROM comments WHERE id = ?')->execute([$id]);
-header('Location: post_view.php?id=' . $postId . '#comments');
+header('Location: post/post_view.php?id=' . $postId . '#comments');
 exit;
