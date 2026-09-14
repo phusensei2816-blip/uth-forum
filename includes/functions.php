@@ -19,14 +19,56 @@ function render_flashes(): void {
     unset($_SESSION['flash']);
 }
 
-/** Very small allow-list HTML sanitizer for rich-text post content */
+/**
+ * Allow-list HTML sanitizer for rich-text post content.
+ *
+ * Prefers HTML Purifier (composer require ezyang/htmlpurifier) which does
+ * proper DOM-based parsing. Falls back to a stricter regex-based cleaner
+ * if the library isn't installed -- the previous version only stripped
+ * *quoted* event handlers (onerror="...") and missed unquoted payloads
+ * like <img src=x onerror=alert(1)>, which is a real bypass.
+ */
 function sanitize_html(string $html): string {
+    static $purifier = null;
+
+    if ($purifier === null && class_exists('HTMLPurifier') && class_exists('HTMLPurifier_Config')) {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Allowed', 'p,br,b,strong,i,em,u,ul,ol,li,a[href],h1,h2,h3,blockquote,img[src|alt],span,code,pre');
+        $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true]);
+        $config->set('Cache.SerializerPath', sys_get_temp_dir());
+        $purifier = new HTMLPurifier($config);
+    }
+
+    if ($purifier) {
+        return $purifier->purify($html);
+    }
+
+    // --- Fallback (only used if HTML Purifier isn't installed) ---
     $allowed = '<p><br><b><strong><i><em><u><ul><ol><li><a><h1><h2><h3><blockquote><img><span><code><pre>';
     $clean = strip_tags($html, $allowed);
-    // strip inline event handlers / javascript: links
-    $clean = preg_replace('/on\w+\s*=\s*"[^"]*"/i', '', $clean);
-    $clean = preg_replace('/on\w+\s*=\s*\'[^\']*\'/i', '', $clean);
-    $clean = preg_replace('/href\s*=\s*"javascript:[^"]*"/i', 'href="#"', $clean);
+
+    // Strip ALL attributes on allowed tags except a safe whitelist (href, src, alt).
+    // This is far more reliable than trying to enumerate dangerous attribute patterns,
+    // and it also removes unquoted event handlers like onerror=alert(1).
+    $clean = preg_replace_callback('/<(\w+)([^>]*)>/i', function ($m) {
+        $tag = strtolower($m[1]);
+        $attrs = $m[2];
+        $kept = '';
+        if (preg_match('/\shref\s*=\s*("[^"]*"|\'[^\']*\')/i', $attrs, $mm)) {
+            $val = trim($mm[1], '"\'');
+            if (preg_match('/^\s*(https?:)?\/\//i', $val) || str_starts_with($val, '#')) {
+                $kept .= ' href="' . htmlspecialchars($val, ENT_QUOTES) . '"';
+            }
+        }
+        if ($tag === 'img' && preg_match('/\ssrc\s*=\s*("[^"]*"|\'[^\']*\')/i', $attrs, $mm)) {
+            $val = trim($mm[1], '"\'');
+            if (preg_match('/^\s*(https?:)?\/\//i', $val)) {
+                $kept .= ' src="' . htmlspecialchars($val, ENT_QUOTES) . '"';
+            }
+        }
+        return '<' . $tag . $kept . '>';
+    }, $clean);
+
     return $clean;
 }
 

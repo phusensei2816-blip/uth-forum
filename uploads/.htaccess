@@ -1,0 +1,8 @@
+# Never execute anything in this directory, no matter what gets uploaded here.
+<FilesMatch "\.(php|phtml|php\d|phar|pl|py|cgi|asp|aspx|sh|exe|htaccess)$">
+    Require all denied
+</FilesMatch>
+
+php_flag engine off
+Options -ExecCGI -Indexes
+AddType text/plain .html .htm .svg

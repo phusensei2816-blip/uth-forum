@@ -15,6 +15,17 @@ if ($receiverId) {
         ORDER BY m.id ASC");
     $stmt->execute([$lastId, $user['id'], $receiverId, $receiverId, $user['id']]);
 } elseif ($classId) {
+    // Authorization: only the class's teacher or an enrolled member may read its messages.
+    $isTeacher = $pdo->prepare('SELECT id FROM classes WHERE id=? AND teacher_id=?');
+    $isTeacher->execute([$classId, $user['id']]);
+    if (!$isTeacher->fetch()) {
+        $isMember = $pdo->prepare('SELECT id FROM class_members WHERE class_id=? AND user_id=?');
+        $isMember->execute([$classId, $user['id']]);
+        if (!$isMember->fetch()) {
+            echo json_encode(['ok' => false, 'error' => 'forbidden']); exit;
+        }
+    }
+
     $stmt = $pdo->prepare("SELECT m.*, u.full_name, u.username FROM messages m JOIN users u ON u.id=m.sender_id
         WHERE m.id > ? AND m.class_id = ? ORDER BY m.id ASC");
     $stmt->execute([$lastId, $classId]);

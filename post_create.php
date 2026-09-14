@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/upload_helpers.php';
 require_role(['student', 'teacher']);
 $user = current_user();
 
@@ -36,15 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Optional file attachment
         if (!empty($_FILES['attachment']['name'])) {
-            $f = $_FILES['attachment'];
-            if ($f['error'] === UPLOAD_ERR_OK && $f['size'] <= MAX_UPLOAD_SIZE) {
-                $ext = pathinfo($f['name'], PATHINFO_EXTENSION);
-                $stored = uniqid('post_') . '.' . preg_replace('/[^a-zA-Z0-9]/', '', $ext);
-                if (move_uploaded_file($f['tmp_name'], UPLOAD_DIR . $stored)) {
-                    $ins = $pdo->prepare('INSERT INTO files (post_id, uploader_id, original_name, stored_name, filesize, mime_type)
-                                           VALUES (?,?,?,?,?,?)');
-                    $ins->execute([$postId, $user['id'], $f['name'], $stored, $f['size'], $f['type']]);
-                }
+            $up = secure_store_upload($_FILES['attachment'], 'post');
+            if ($up['ok']) {
+                $ins = $pdo->prepare('INSERT INTO files (post_id, uploader_id, original_name, stored_name, filesize, mime_type)
+                                       VALUES (?,?,?,?,?,?)');
+                $ins->execute([$postId, $user['id'], $_FILES['attachment']['name'], $up['stored'], $_FILES['attachment']['size'], $up['mime']]);
+            } else {
+                flash('error', 'Đính kèm không được lưu: ' . $up['error']);
             }
         }
 
