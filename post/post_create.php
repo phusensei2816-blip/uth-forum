@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = ($user['role'] === 'teacher' ? 'Đăng thông báo' : 'Đăng bài') . ' - UTH Forum';
+$pageCss = 'post.css';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="row" style="justify-content:center;">
