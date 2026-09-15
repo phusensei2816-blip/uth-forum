@@ -96,6 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const name = c.full_name || c.username || 'Người dùng';
     const avatarLetter = name.trim().charAt(0).toUpperCase() || '?';
+    const avatarHtml = c.avatar
+  ? `<img src="${escapeHtml(String(c.avatar).replace(/^\//, ''))}" alt="Ảnh đại diện">`
+  : escapeHtml(avatarLetter);
 
     const comment = document.createElement('div');
     comment.className = 'fb-comment';
@@ -103,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     comment.innerHTML = `
       <div class="avatar fb-comment-avatar">
-        ${escapeHtml(avatarLetter)}
+        ${avatarHtml}
       </div>
 
       <div class="fb-comment-content">
@@ -295,6 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildComment(c) {
       const name = c.full_name || c.username || 'Người dùng';
       const avatarLetter = name.trim().charAt(0).toUpperCase() || '?';
+      const avatarHtml = c.avatar
+      ? `<img src="${escapeHtml(String(c.avatar).replace(/^\//, ''))}" alt="Ảnh đại diện">`
+      : escapeHtml(avatarLetter);
 
       const comment = document.createElement('div');
       comment.className = 'fb-comment';
@@ -303,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       comment.innerHTML = `
         <div class="avatar fb-comment-avatar">
-          ${escapeHtml(avatarLetter)}
+          ${avatarHtml}
         </div>
 
         <div class="fb-comment-content">
@@ -466,5 +472,61 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', closeMenu);
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeMenu();
+  });
+});
+
+
+// ---------- Responsive mobile menu + tables ----------
+document.addEventListener('DOMContentLoaded', () => {
+  // Hamburger menu trên điện thoại/tablet nhỏ.
+  const menuBtn = document.getElementById('mobileMenuToggle');
+  const mainNav = document.getElementById('mainNav');
+
+  if (menuBtn && mainNav) {
+    const closeMobileMenu = () => {
+      mainNav.classList.remove('mobile-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    };
+
+    menuBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const opened = mainNav.classList.toggle('mobile-open');
+      menuBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+      menuBtn.innerHTML = opened
+        ? '<i class="fa-solid fa-xmark"></i>'
+        : '<i class="fa-solid fa-bars"></i>';
+    });
+
+    document.addEventListener('click', (event) => {
+      if (window.innerWidth > 700) return;
+      if (!mainNav.contains(event.target) && !menuBtn.contains(event.target)) {
+        closeMobileMenu();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 700) closeMobileMenu();
+    });
+  }
+
+  // Gắn tên cột vào từng ô để bảng có thể chuyển thành card trên mobile.
+  document.querySelectorAll('table').forEach(table => {
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th =>
+      th.textContent.trim()
+    );
+
+    if (!headers.length) {
+      const firstRow = table.querySelector('tr');
+      if (firstRow) {
+        firstRow.querySelectorAll('th').forEach(th => headers.push(th.textContent.trim()));
+      }
+    }
+
+    table.querySelectorAll('tbody tr').forEach(row => {
+      row.querySelectorAll('td').forEach((cell, index) => {
+        if (headers[index]) cell.setAttribute('data-label', headers[index]);
+      });
+    });
   });
 });

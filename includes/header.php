@@ -16,10 +16,13 @@ $user = current_user();
 <body>
 
 <header>
-  <a class="logo" href="<?= e(BASE_URL) ?>/index.php">
-    <div class="logo-mark">U</div>
-    <span>Diễn đàn UTH</span>
-  </a>
+<a href="<?= e(BASE_URL) ?>/index.php" class="brand">
+    <img
+        src="<?= e(BASE_URL) ?>/img/logo.png"
+        alt="Diễn đàn UTH"
+        class="brand-logo"
+    >
+</a>
 
   <form class="search-wrap" method="get" action="<?= e(BASE_URL) ?>/index.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -29,7 +32,11 @@ $user = current_user();
     <input type="text" name="q" value="<?= e($_GET['q'] ?? '') ?>" placeholder="Tìm bài viết, lớp học, thành viên...">
   </form>
 
-  <div class="nav-icons">
+  <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Mở menu" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="nav-icons" id="mainNav">
     <?php if ($user): ?>
       <a class="icon-btn" href="<?= e(BASE_URL) ?>/chat/index.php" title="Tin nhắn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">

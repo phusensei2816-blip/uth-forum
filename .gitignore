@@ -1,12 +1,15 @@
-# Uploaded materials (user content, don't commit)
-uploads/materials/*
-uploads/avatars/*
-!uploads/materials/.gitkeep
-!uploads/avatars/.gitkeep
+# BỎ QUA FILE CẤU HÌNH DATABASE (RẤT QUAN TRỌNG)
+config/db.php
 
-# OS files
+uploads/avatars/*
+!uploads/avatars/.gitkeep
+uploads/materials/*
+!uploads/materials/.gitkeep
+
+tmp/sessions/*
+!tmp/sessions/.gitkeep
+
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-
-# IDE
-.vscode/

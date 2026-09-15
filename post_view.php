@@ -216,5 +216,4 @@ require __DIR__ . '/includes/header.php';
     </div>
   </section>
 </div>
-<script src="js/main.js"></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
