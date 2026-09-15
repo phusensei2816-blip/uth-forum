@@ -10,7 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $fullName = trim($_POST['full_name'] ?? '');
-    $role     = in_array($_POST['role'] ?? '', ['student', 'teacher'], true) ? $_POST['role'] : 'student';
+    // Role is never taken from client input. Everyone starts as 'student';
+    // an admin must explicitly promote an account to 'teacher' in admin/users.php.
+    $role     = 'student';
     $agree    = isset($_POST['terms']);
 
     if ($username === '' || !preg_match('/^[a-zA-Z0-9_.]{3,30}$/', $username)) {
@@ -70,12 +72,9 @@ require __DIR__ . '/includes/header.php';
         <label>Mật khẩu</label>
         <input type="password" name="password" required>
       </div>
-      <div class="form-group">
-        <label>Vai trò</label>
-        <select name="role">
-          <option value="student">Sinh viên</option>
-          <option value="teacher">Giảng viên</option>
-        </select>
+      <div class="alert alert-info">
+        Tài khoản mới sẽ được tạo với vai trò Sinh viên. Nếu bạn là giảng viên,
+        vui lòng liên hệ quản trị viên để được nâng cấp quyền sau khi đăng ký.
       </div>
       <div class="form-group check">
         <input type="checkbox" name="terms" id="terms">

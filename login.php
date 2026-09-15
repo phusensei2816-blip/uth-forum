@@ -9,23 +9,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = trim($_POST['login'] ?? '');
     $password = $_POST['password'] ?? '';
     $role = $_POST['role'] ?? 'student';
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE (username = ? OR email = ?) AND role = ? AND is_active = 1');
-    $stmt->execute([$login, $login, $role]);
-    $user = $stmt->fetch();
+    $maxAttempts = 5;
+    $windowMinutes = 15;
 
-    if ($user && password_verify($password, $user['password_hash'])) {
-        session_regenerate_id(true);
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['role'] = $user['role'];
-        header('Location: index.php');
-        exit;
+    $cnt = $pdo->prepare('SELECT COUNT(*) FROM login_attempts
+                           WHERE ip = ? AND login = ? AND attempted_at > (NOW() - INTERVAL ' . $windowMinutes . ' MINUTE)');
+    $cnt->execute([$ip, $login]);
+    $recentAttempts = (int)$cnt->fetchColumn();
+
+    if ($recentAttempts >= $maxAttempts) {
+        $error = 'Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau ' . $windowMinutes . ' phút.';
+    } else {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE (username = ? OR email = ?) AND role = ? AND is_active = 1');
+        $stmt->execute([$login, $login, $role]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password_hash'])) {
+            // Successful login: clear this login's failed-attempt history
+            $pdo->prepare('DELETE FROM login_attempts WHERE ip = ? AND login = ?')->execute([$ip, $login]);
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            header('Location: index.php');
+            exit;
+        }
+
+        $pdo->prepare('INSERT INTO login_attempts (ip, login) VALUES (?, ?)')->execute([$ip, $login]);
+        $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
     }
-    $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
 }
 
 $pageTitle = 'Đăng nhập - UTH Forum';
 
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src https://cdnjs.cloudflare.com");
 ?>
 <!DOCTYPE html>
 <html lang="vi">

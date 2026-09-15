@@ -9,7 +9,7 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Base URL of the site, used for building links (no trailing slash)
-define('BASE_URL', '/uth-forum-main');
+define('BASE_URL', '/uth-forum');
 
 // Where uploaded materials are stored on disk / served from
 define('UPLOAD_DIR', __DIR__ . '/../uploads/materials/');
@@ -28,5 +28,7 @@ try {
         ]
     );
 } catch (PDOException $e) {
-    die('Không thể kết nối cơ sở dữ liệu: ' . htmlspecialchars($e->getMessage()));
+    error_log('[uth-forum] DB connection failed: ' . $e->getMessage());
+    http_response_code(500);
+    die('Hệ thống đang bảo trì, vui lòng thử lại sau.');
 }

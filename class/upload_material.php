@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/upload_helpers.php';
 require_role(['teacher']);
 $user = current_user();
 
@@ -15,24 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_FILES['material']['name'])) {
         $errors[] = 'Vui lòng chọn tệp để tải lên.';
     } else {
-        $f = $_FILES['material'];
-        if ($f['error'] !== UPLOAD_ERR_OK) {
-            $errors[] = 'Tải lên thất bại.';
-        } elseif ($f['size'] > MAX_UPLOAD_SIZE) {
-            $errors[] = 'Tệp vượt quá dung lượng cho phép (20MB).';
+        $up = secure_store_upload($_FILES['material'], 'mat');
+        if ($up['ok']) {
+            $ins = $pdo->prepare('INSERT INTO files (class_id, uploader_id, original_name, stored_name, filesize, mime_type)
+                                   VALUES (?,?,?,?,?,?)');
+            $ins->execute([$id, $user['id'], $_FILES['material']['name'], $up['stored'], $_FILES['material']['size'], $up['mime']]);
+            flash('success', 'Đã tải lên tài liệu.');
+            header('Location: view.php?id=' . $id);
+            exit;
         } else {
-            $ext = pathinfo($f['name'], PATHINFO_EXTENSION);
-            $stored = uniqid('mat_') . '.' . preg_replace('/[^a-zA-Z0-9]/', '', $ext);
-            if (move_uploaded_file($f['tmp_name'], UPLOAD_DIR . $stored)) {
-                $ins = $pdo->prepare('INSERT INTO files (class_id, uploader_id, original_name, stored_name, filesize, mime_type)
-                                       VALUES (?,?,?,?,?,?)');
-                $ins->execute([$id, $user['id'], $f['name'], $stored, $f['size'], $f['type']]);
-                flash('success', 'Đã tải lên tài liệu.');
-                header('Location: view.php?id=' . $id);
-                exit;
-            } else {
-                $errors[] = 'Không thể lưu tệp lên máy chủ.';
-            }
+            $errors[] = $up['error'];
         }
     }
 }

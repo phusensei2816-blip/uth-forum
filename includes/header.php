@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . '/functions.php';
 $user = current_user();
+
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+// NOTE: several pages (login.php, post_view.php, chat/*, admin/moderation.php) still use
+// inline <script> blocks, so 'unsafe-inline' is kept for script-src below. The stronger fix
+// is to move that JS into js/*.js files and drop 'unsafe-inline' entirely -- do that as a
+// follow-up rather than blocking this security patch on a larger refactor.
+header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src https://cdnjs.cloudflare.com");
 ?>
 <!DOCTYPE html>
 <html lang="vi">
