@@ -14,13 +14,15 @@ $token = trim($_GET['token'] ?? $_POST['token'] ?? '');
 if ($token === '') {
     $error = 'Liên kết đặt lại mật khẩu không hợp lệ.';
 } else {
+    $now = date('Y-m-d H:i:s');
+
     $stmt = $pdo->prepare(
         'SELECT pr.*, u.email
-         FROM password_resets pr
-         INNER JOIN users u ON u.id = pr.user_id
-         WHERE pr.token = ? AND pr.expires_at > NOW() AND u.is_active = 1'
+        FROM password_resets pr
+        INNER JOIN users u ON u.id = pr.user_id
+        WHERE pr.token = ? AND pr.expires_at > ? AND u.is_active = 1'
     );
-    $stmt->execute([$token]);
+    $stmt->execute([$token, $now]);
     $reset = $stmt->fetch();
 
     if (!$reset) {

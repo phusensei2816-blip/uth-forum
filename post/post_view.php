@@ -74,8 +74,7 @@ $comments = $commentStmt->fetchAll();
 $pageTitle = $post['title'] . ' - UTH Forum';
 $pageCss = 'post.css';
 
-require __DIR__ . '/../includes/header.php';
-?>
+require __DIR__ . '/../includes/header.php';?>
 
 <script>
     window.CSRF = <?= json_encode(
@@ -145,9 +144,9 @@ require __DIR__ . '/../includes/header.php';
                                 <?= e($file['original_name']) ?>
                             </span>
 
+                            <!-- Sửa dòng này trong post/post_view.php -->
                             <a class="post-view-download"
-                                href="<?= e(UPLOAD_URL . $file['stored_name']) ?>"
-                                download>
+                                href="../download.php?id=<?= (int)$file['id'] ?>">
                                 Tải xuống
                             </a>
                         </div>

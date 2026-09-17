@@ -1,6 +1,7 @@
 /* ---------- Chat ---------- */
 
 h2{
+    font-size: 25px;
     margin: 0 30px;
     transform:translateY(-15px)
 }
@@ -8,7 +9,7 @@ h2{
 .chat-wrap {
     display: flex;
     height: 70vh;
-    min-height: 620px;
+    min-height: 550px;
     background: #ffffff;
     border: 1px solid #dce8df;
     border-radius: 15px;
@@ -219,6 +220,13 @@ h2{
 
 .chat-input button:hover {
     background: #176b35;
+}
+
+/* Thanh cuộn riêng cho danh sách nhóm lớp */
+.chat-groups-list {
+    max-height: 220px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 /* Hiển thị trên điện thoại */

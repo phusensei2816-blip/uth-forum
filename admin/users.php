@@ -65,4 +65,3 @@ require __DIR__ . '/../includes/header.php';
   </table>
   <?php pagination_links($page, $totalPages, 'users.php'); ?>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>

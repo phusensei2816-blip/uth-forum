@@ -22,8 +22,8 @@
 /* Khu vực tham gia lớp */
 .class-join-section {
     flex: 1;
-    min-width: 260px;
-    margin: 0 20px 10px;
+    min-width: 200px;
+    margin: 35px 20px 0;
 }
 
 .class-join-card {
@@ -39,6 +39,7 @@
 }
 
 .class-join-card h3 {
+    font-size: 20px;
     margin: 0 0 20px;
 }
 

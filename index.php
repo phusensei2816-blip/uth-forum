@@ -66,34 +66,79 @@ require __DIR__ . '/includes/header.php';?>
 <?php endif; ?>
 
 <div class="row">
-  <section class="left">
-    <h2><?= $q !== '' ? 'Kết quả tìm kiếm: "' . e($q) . '"' : 'Bảng tin cộng đồng' ?></h2>
-    <div class="box">
-      <?php if (!$posts): ?>
-        <p style="color:var(--muted);">Chưa có bài viết nào.</p>
-      <?php endif; ?>
-      <?php foreach ($posts as $p): ?>
-        <div class="post-card">
-          <div class="avatar"><?= e(mb_strtoupper(mb_substr($p['full_name'] ?: $p['username'], 0, 1))) ?></div>
-          <div style="flex:1;min-width:0;">
-            <div class="post-meta">
-              <strong><?= e($p['full_name'] ?: $p['username']) ?></strong>
-              <span><?= e(role_label($p['role'])) ?></span>
-              <span>· <?= time_ago($p['created_at']) ?></span>
-              <?php if ($p['is_announcement']): ?><span class="tag tag-urgent">Khẩn cấp</span><?php endif; ?>
+    <section class="left">
+        <h2>
+            <?= $q !== ''
+                ? 'Kết quả tìm kiếm: "' . e($q) . '"'
+                : 'Bảng tin cộng đồng'
+            ?>
+        </h2>
+
+        <div class="box">
+            <div class="feed-list">
+                <?php if (!$posts): ?>
+                    <p class="feed-empty">Chưa có bài viết nào.</p>
+                <?php endif; ?>
+
+                <?php foreach ($posts as $p): ?>
+                    <div class="post-card">
+                        <div class="avatar">
+                            <?= e(mb_strtoupper(
+                                mb_substr($p['full_name'] ?: $p['username'], 0, 1)
+                            )) ?>
+                        </div>
+
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <strong>
+                                    <?= e($p['full_name'] ?: $p['username']) ?>
+                                </strong>
+
+                                <span><?= e(role_label($p['role'])) ?></span>
+                                <span>· <?= time_ago($p['created_at']) ?></span>
+
+                                <?php if ($p['is_announcement']): ?>
+                                    <span class="tag tag-urgent">Khẩn cấp</span>
+                                <?php endif; ?>
+                            </div>
+
+                            <h3 class="post-title">
+                                <a href="post/post_view.php?id=<?= (int)$p['id'] ?>">
+                                    <?= e($p['title']) ?>
+                                </a>
+                            </h3>
+
+                            <div class="post-actions">
+                                <span>
+                                    <i class="fa-solid fa-heart"></i>
+                                    <?= (int)$p['like_count'] ?>
+                                </span>
+
+                                <span>
+                                    <i class="fa-solid fa-comment"></i>
+                                    <?= (int)$p['comment_count'] ?>
+                                </span>
+
+                                <a href="post/post_view.php?id=<?= (int)$p['id'] ?>">
+                                    Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
-            <h3 class="post-title"><a href="post/post_view.php?id=<?= (int)$p['id'] ?>"><?= e($p['title']) ?></a></h3>
-            <div class="post-actions">
-              <span><i class="fa-solid fa-heart"></i> <?= (int)$p['like_count'] ?></span>
-              <span><i class="fa-solid fa-comment"></i> <?= (int)$p['comment_count'] ?></span>
-              <a href="post/post_view.php?id=<?= (int)$p['id'] ?>">Xem chi tiết</a>
+
+            <div class="feed-pagination">
+                <?php
+                pagination_links(
+                    $page,
+                    $totalPages,
+                    'index.php' . ($q !== '' ? '?q=' . urlencode($q) : '')
+                );
+                ?>
             </div>
-          </div>
         </div>
-      <?php endforeach; ?>
-      <?php pagination_links($page, $totalPages, 'index.php' . ($q !== '' ? '?q=' . urlencode($q) : '')); ?>
-    </div>
-  </section>
+    </section>
 
   <aside class="sidebar">
 

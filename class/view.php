@@ -105,7 +105,7 @@ require __DIR__ . '/../includes/header.php';
     <section class="class-detail-main">
         <?php if ($isTeacher): ?>
             <div class="class-action-box">
-                <a href="../post_create.php" class="btn btn-red btn-sm">
+                <a href="../post/post_create.php" class="btn btn-red btn-sm">
                     Đăng thông báo
                 </a>
 
@@ -192,7 +192,7 @@ require __DIR__ . '/../includes/header.php';
 
                         <a
                             class="btn btn-outline btn-sm"
-                            href="../<?= e(UPLOAD_URL . $material['stored_name']) ?>"
+                            href="<?= e(UPLOAD_URL . $material['stored_name']) ?>"
                             download
                         >
                             Tải xuống

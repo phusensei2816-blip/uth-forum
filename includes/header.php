@@ -21,10 +21,7 @@ function nav_active(string $page, string $currentPage): string
         <link rel="stylesheet" href="<?= e(BASE_URL) ?>/css/<?= e($pageCss) ?>">
     <?php endif; ?>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <title><?= e($pageTitle ?? 'Diễn đàn UTH') ?></title>
 </head>

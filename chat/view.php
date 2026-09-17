@@ -79,11 +79,13 @@ require __DIR__ . '/../includes/header.php';
   <div class="chat-list">
     <?php if ($groups): ?>
       <div style="padding:10px 16px;font-size:12px;color:var(--muted);font-weight:600;">NHÓM LỚP</div>
+      <div class="chat-groups-list">
       <?php foreach ($groups as $g): ?>
         <div class="conv <?= $classId === (int)$g['id'] ? 'active' : '' ?>" onclick="location.href='view.php?class_id=<?= (int)$g['id'] ?>'">
           <div class="avatar-sm"><i class="fa-solid fa-people-group"></i></div><div><?= e($g['name']) ?></div>
         </div>
       <?php endforeach; ?>
+    </div>
     <?php endif; ?>
     <?php if ($contacts): ?>
       <div style="padding:10px 16px;font-size:12px;color:var(--muted);font-weight:600;">LIÊN HỆ</div>
@@ -114,4 +116,3 @@ require __DIR__ . '/../includes/header.php';
   </div>
 </div>
 <script src="../js/chat.js"></script>
-<?php require __DIR__ . '/../includes/footer.php'; ?>

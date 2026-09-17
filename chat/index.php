@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 require_login();
@@ -77,20 +76,22 @@ require __DIR__ . '/../includes/header.php';
         <?php if ($groups): ?>
             <div class="chat-section-title">NHÓM LỚP</div>
 
-            <?php foreach ($groups as $g): ?>
-                <div
-                    class="conv <?= $activeClassId === (int) $g['id'] ? 'active' : '' ?>"
-                    onclick="location.href='view.php?class_id=<?= (int) $g['id'] ?>'"
-                >
-                    <div class="avatar-sm">
-                        <i class="fa-solid fa-people-group"></i>
-                    </div>
+            <div class="chat-groups-list">
+                <?php foreach ($groups as $g): ?>
+                    <div
+                        class="conv <?= $activeClassId === (int) $g['id'] ? 'active' : '' ?>"
+                        onclick="location.href='view.php?class_id=<?= (int) $g['id'] ?>'">
 
-                    <div class="chat-contact-name">
-                        <?= e($g['name']) ?>
+                        <div class="avatar-sm">
+                            <i class="fa-solid fa-people-group"></i>
+                        </div>
+
+                        <div class="chat-contact-name">
+                            <?= e($g['name']) ?>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
 
 
@@ -122,9 +123,9 @@ require __DIR__ . '/../includes/header.php';
 
         <?php if (!$groups && !$contacts): ?>
           <div class="chat-empty-list">
-              <div class="chat-empty-icon">
+              <a href="../class/join.php" class="chat-empty-icon">
                 <i class="fa-solid fa-plus"></i>
-              </div>
+              </a>
 
               <p>Tham gia một lớp để bắt đầu trò chuyện</p>
             </div>

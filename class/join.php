@@ -119,11 +119,7 @@ require __DIR__ . '/../includes/header.php';?>
             <?php endif; ?>
 
             <form method="post">
-                <input
-                    type="hidden"
-                    name="csrf"
-                    value="<?= e(csrf_token()) ?>"
-                >
+                <input type="hidden"  name="csrf" value="<?= e(csrf_token()) ?>">
 
                 <div class="form-group">
                     <label for="invite-code">Mã mời lớp học</label>
@@ -138,8 +134,7 @@ require __DIR__ . '/../includes/header.php';?>
                         minlength="12"
                         maxlength="12"
                         autocomplete="off"
-                        required
-                    >
+                        required>
                 </div>
 
                 <button type="submit" class="btn btn-teal class-join-button">

@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([$user['id']]);
 
             $token = bin2hex(random_bytes(32));
-            $expiresAt = date('Y-m-d H:i:s', time() + 3600);
+            // Sử dụng strtotime với múi giờ Việt Nam đã thiết lập từ functions.php
+            $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
             $stmt = $pdo->prepare(
                 'INSERT INTO password_resets (user_id, token, expires_at)

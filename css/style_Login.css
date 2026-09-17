@@ -121,8 +121,8 @@
 }
 
 .role-option {
-  width: 85px;
-  min-height: 75px;
+  width: 100px;
+  min-height: 110px;
   padding: 10px 6px;
   border: 1.5px solid #dfe5e3;
   border-radius: 10px;
@@ -141,7 +141,7 @@
 }
 
 .role-option i {
-    font-size: 20px;
+    font-size: 25px;
     line-height: 1;
 }
 
@@ -176,7 +176,7 @@
 .input-wrap > i {
     position: absolute;
     left: 17px;
-    top: 13px;
+    top: 16px;
     font-size: 17px;
     color: #26302e;
     pointer-events: none;
@@ -184,7 +184,7 @@
 
 .input-wrap input {
   width: 100%;
-  height: 40px;
+  height: 50px;
   margin: 0;
   padding: 0 40px;
   border: 1.5px solid #d9e1df;

@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($role === 'admin') {
         $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? AND role = ? AND is_active = 1');
-        $stmt->execute([$login, $login, $role]);
+        $stmt->execute([$login, $role]);
     } else {
         $stmt = $pdo->prepare('SELECT * FROM users WHERE (user_code = ? OR email = ?) AND role = ? AND is_active = 1');
         $stmt->execute([$login, $login, $role]);
@@ -141,14 +141,14 @@ $pageTitle = 'Đăng nhập - UTH Forum';
                     <button type="submit" class="login-submit">Đăng nhập</button>
                 </form>
 
-                <!-- Social -->
+                <!-- Social
                 <div class="social-divider">
                     <span></span>
                     <p>hoặc đăng nhập với</p>
                     <span></span>
-                </div>
+                </div> -->
 
-                <div class="social-list">
+                <!-- <div class="social-list">
                     <button type="button" class="social-btn">
                         <img src="img/google.png" alt="Google" class="social-icon">
                         Google
@@ -158,7 +158,7 @@ $pageTitle = 'Đăng nhập - UTH Forum';
                         <img src="img/microsoft.png" alt="microsoft" class="social-icon">
                         Microsoft
                     </button>
-                </div>
+                </div> -->
 
                 <p class="register-text">
                     Chưa có tài khoản?

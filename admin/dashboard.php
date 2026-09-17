@@ -16,8 +16,9 @@ $totalVisits  = (int)$pdo->query('SELECT COALESCE(SUM(hits),0) FROM visits')->fe
 $recentVisits = $pdo->query('SELECT * FROM visits ORDER BY visited_at DESC LIMIT 7')->fetchAll();
 
 $pageTitle = 'Bảng điều khiển quản trị - UTH Forum';
-require __DIR__ . '/../includes/header.php';
-?>
+
+require __DIR__ . '/../includes/header.php';?>
+
 <h2>Bảng điều khiển quản trị</h2>
 <div class="stat-grid">
   <div class="stat-box"><div class="num"><?= $totalUsers ?></div><div class="label">Tổng người dùng</div></div>
@@ -32,9 +33,9 @@ require __DIR__ . '/../includes/header.php';
   <div class="stat-box"><div class="num"><?= $totalVisits ?></div><div class="label">Tổng lượt truy cập</div></div>
 </div>
 
-<div class="row">
-  <div class="box" style="flex:1;min-width:280px;">
-    <h3>Truy cập 7 ngày gần nhất</h3>
+<div class="row" style="display: grid; grid-template-columns: 2fr 1fr;">
+  <div class="box" style="flex:1;min-width:280px; margin: 0 20px; display: flex; flex-direction: column; align-items: center;justify-content: center; ">
+    <h3 style= "text-align: center; margin:0; padding:0;">Truy cập 7 ngày gần nhất</h3>
     <table>
       <tr><th>Ngày</th><th>Lượt truy cập</th></tr>
       <?php foreach ($recentVisits as $v): ?>
@@ -43,11 +44,10 @@ require __DIR__ . '/../includes/header.php';
       <?php if (!$recentVisits): ?><tr><td colspan="2" style="color:var(--muted);">Chưa có dữ liệu.</td></tr><?php endif; ?>
     </table>
   </div>
-  <div class="box" style="flex:1;min-width:280px;">
+  <div class="box" style="flex:1;min-width:280px; margin: 0 20px; display: flex; flex-direction: column; align-items: center;">
     <h3>Thao tác nhanh</h3>
     <p><a href="moderation.php" class="btn btn-red btn-sm">Duyệt bài viết (<?= $pendingPosts ?>)</a></p>
     <p><a href="users.php" class="btn btn-teal btn-sm">Quản lý người dùng</a></p>
     <p><a href="files.php" class="btn btn-outline btn-sm">Quản lý tệp tin</a></p>
   </div>
 </div>
-<?php require __DIR__ . '/../includes/footer.php'; ?>

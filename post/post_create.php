@@ -95,12 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $storedName = uniqid('post_') . '.' . $extension;
 
-                if (
-                    move_uploaded_file(
-                        $file['tmp_name'],
-                        UPLOAD_DIR . $storedName
-                    )
-                ) {
+                $targetPath = UPLOAD_DIR . $storedName;
+
+                if (move_uploaded_file($file['tmp_name'], $targetPath))
+                {
                     $stmt = $pdo->prepare(
                         'INSERT INTO files
                             (post_id, uploader_id, original_name,

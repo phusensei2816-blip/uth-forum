@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/auth.php';
 
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
+if (!defined('UPLOAD_DIR')) {
+    define('UPLOAD_DIR', dirname(__DIR__) . '/uploads/');
+}
+
+
 function e(?string $s): string {
     return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }

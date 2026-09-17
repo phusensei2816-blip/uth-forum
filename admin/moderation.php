@@ -68,4 +68,3 @@ function fillReason(form) {
   return true;
 }
 </script>
-<?php require __DIR__ . '/../includes/footer.php'; ?>

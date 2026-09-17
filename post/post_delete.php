@@ -15,5 +15,5 @@ if ($post['user_id'] != $user['id'] && $user['role'] !== 'admin') {
 
 $pdo->prepare('DELETE FROM posts WHERE id = ?')->execute([$id]);
 flash('success', 'Đã xóa bài viết.');
-header('Location: ' . ($user['role'] === 'admin' ? 'admin/moderation.php' : 'index.php'));
+header('Location: ' . ($user['role'] === 'admin' ? 'admin/moderation.php' : '../index.php'));
 exit;
